@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<extension-configuration>
+    <reportInterval>1</reportInterval>
+    <connectionTimeout>50000</connectionTimeout>
+    <metrics>
+        <metric>com.hivemq.messages.incoming.total.count</metric>
+        <metric>com.hivemq.messages.outgoing.total.count</metric>
+        <metric enabled="false">com.hivemq.messages.incoming.total.rate</metric>
+    </metrics>
+</extension-configuration>
