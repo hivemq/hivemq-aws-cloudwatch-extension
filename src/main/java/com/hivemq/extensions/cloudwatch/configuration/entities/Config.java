@@ -23,18 +23,18 @@ import javax.xml.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 
-@XmlRootElement(name = "extension-configuration")
+@XmlRootElement(name = "cloudwatch-extension-configuration")
 @XmlType(propOrder = {})
-@XmlAccessorType(XmlAccessType.FIELD)
+@XmlAccessorType(XmlAccessType.NONE)
 public class Config {
 
     public static final int DEF_REPORT_INTERVAL = 1;
     public static final int DEF_CONNECTION_TIMEOUT = ClientConfiguration.DEFAULT_CONNECTION_TIMEOUT;
 
-    @XmlElement(name = "reportInterval", required = true, defaultValue = "" + DEF_REPORT_INTERVAL)
+    @XmlElement(name = "report-interval", required = true, defaultValue = "" + DEF_REPORT_INTERVAL)
     private int reportInterval = DEF_REPORT_INTERVAL;
 
-    @XmlElement(name = "connectionTimeout", required = true, defaultValue = "" + DEF_CONNECTION_TIMEOUT)
+    @XmlElement(name = "connection-timeout", required = true, defaultValue = "" + DEF_CONNECTION_TIMEOUT)
     private int connectionTimeout = DEF_CONNECTION_TIMEOUT;
 
     @XmlElementWrapper(name = "metrics")

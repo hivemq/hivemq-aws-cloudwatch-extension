@@ -34,13 +34,15 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class ExtensionConfiguration {
 
-    private static final String EXTENSION_CONFIG_FILE_NAME = "extension-config.xml";
-    private static final Logger LOG = LoggerFactory.getLogger(ExtensionConfiguration.class);
+    private static @NotNull
+    final String EXTENSION_CONFIG_FILE_NAME = "extension-config.xml";
+    private static @NotNull
+    final Logger LOG = LoggerFactory.getLogger(ExtensionConfiguration.class);
 
-    private final XmlParser xmlParser = new XmlParser();
-    private final ReadWriteLock lock = new ReentrantReadWriteLock();
-    private List<String> enabledMetrics = new ArrayList<>();
-    private final Config config;
+    private final @NotNull ConfigurationXmlParser configurationXmlParser = new ConfigurationXmlParser();
+    private final @NotNull ReadWriteLock lock = new ReentrantReadWriteLock();
+    private final @NotNull Config config;
+    private @NotNull List<String> enabledMetrics = new ArrayList<>();
 
 
     public ExtensionConfiguration(@NotNull final File extensionHomeFolder) {
@@ -73,7 +75,7 @@ public class ExtensionConfiguration {
 
         try {
 
-            final @NotNull Config newConfig = xmlParser.unmarshalExtensionConfig(file);
+            final @NotNull Config newConfig = configurationXmlParser.unmarshalExtensionConfig(file);
 
             if (newConfig.getConnectionTimeout() < 1) {
                 LOG.warn("Connection timeout must be greater than 0, using default timeout " + defaultConfig.getConnectionTimeout());
@@ -110,8 +112,9 @@ public class ExtensionConfiguration {
     private List<String> readEnabledMetrics() {
 
         final Lock readLock = this.lock.readLock();
-        readLock.lock();
+
         try {
+            readLock.lock();
             final List<String> newMetrics = new ArrayList<>();
 
             if (this.config.getMetrics() == null || this.config.getMetrics().isEmpty()) {

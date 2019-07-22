@@ -9,6 +9,7 @@ import com.codahale.metrics.MetricFilter;
 import com.codahale.metrics.MetricRegistry;
 import com.google.common.base.Preconditions;
 import com.hivemq.extension.sdk.api.annotations.NotNull;
+import com.hivemq.extension.sdk.api.annotations.Nullable;
 import com.hivemq.extension.sdk.api.services.ManagedExtensionExecutorService;
 import com.hivemq.extensions.cloudwatch.configuration.ExtensionConfiguration;
 import com.hivemq.extensions.cloudwatch.configuration.entities.Config;
@@ -20,11 +21,11 @@ import java.util.concurrent.TimeUnit;
 
 class CloudWatchReporterService {
 
-    private static final String METRIC_NAMESPACE = "hivemq-metrics";
+    private static @NotNull
+    final String METRIC_NAMESPACE = "hivemq-metrics";
     private static @NotNull
     final Logger LOG = LoggerFactory.getLogger(CloudWatchReporterService.class);
-
-    private CloudWatchReporter cloudWatchReporter = null;
+    private @Nullable CloudWatchReporter cloudWatchReporter = null;
 
     CloudWatchReporter getCloudWatchReporter() {
         return cloudWatchReporter;
@@ -39,7 +40,7 @@ class CloudWatchReporterService {
         Preconditions.checkNotNull(executorService, "ExecutorService must not be null");
         Preconditions.checkNotNull(metricRegistry, "MetricRegistry must not be null");
 
-        @NotNull final Config c = configuration.getConfig();
+        @NotNull final Config cloudWatchConfig = configuration.getConfig();
 
         if (configuration.getEnabledMetrics().isEmpty()) {
             LOG.warn("No hiveMQ metrics enabled, no CloudWatch report started");
@@ -49,10 +50,10 @@ class CloudWatchReporterService {
                     new ConfiguredMetricsFilter(configuration.getEnabledMetrics()),
                     new AmazonCloudWatchAsyncClient(
                             new DefaultAWSCredentialsProviderChain(),
-                            new ClientConfiguration().withConnectionTimeout(c.getConnectionTimeout()),
+                            new ClientConfiguration().withConnectionTimeout(cloudWatchConfig.getConnectionTimeout()),
                             executorService)
             );
-            cloudWatchReporter.start(c.getReportInterval(), TimeUnit.MINUTES);
+            cloudWatchReporter.start(cloudWatchConfig.getReportInterval(), TimeUnit.MINUTES);
             LOG.info("Started CloudWatchReporter for {} HiveMQ metrics", configuration.getEnabledMetrics().size());
         }
     }

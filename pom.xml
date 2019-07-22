@@ -21,7 +21,7 @@
     <name>HiveMQ CloudWatch Extension</name>
     <groupId>com.hivemq.extension.cloudwatch</groupId>
     <artifactId>hivemq-cloudwatch-extension</artifactId>
-    <version>1.0</version>
+    <version>1.0.0</version>
 
     <description>HiveMQ Cloudwatch Extension</description>
 

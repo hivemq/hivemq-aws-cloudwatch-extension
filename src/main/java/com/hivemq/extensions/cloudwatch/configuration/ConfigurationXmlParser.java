@@ -31,15 +31,15 @@ import java.io.File;
 import java.io.IOException;
 
 @ThreadSafe
-public class XmlParser {
+class ConfigurationXmlParser {
 
-    private static final Logger LOG = LoggerFactory.getLogger(XmlParser.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ConfigurationXmlParser.class);
 
     //jaxb context is thread safe
     private @NotNull
     final JAXBContext jaxb;
 
-    XmlParser() {
+    ConfigurationXmlParser() {
         try {
             jaxb = JAXBContext.newInstance(Config.class, Metric.class);
         } catch (JAXBException e) {

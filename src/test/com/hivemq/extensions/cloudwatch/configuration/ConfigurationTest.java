@@ -18,15 +18,15 @@ import static org.junit.Assert.assertEquals;
 public class ConfigurationTest {
 
     private static String extensionContent =
-            "<extension-configuration>\n" +
-                    "    <reportInterval>10</reportInterval>\n" +
-                    "    <connectionTimeout>100</connectionTimeout>\n" +
+            "<cloudwatch-extension-configuration>\n" +
+                    "    <report-interval>10</report-interval>\n" +
+                    "    <connection-timeout>100</connection-timeout>\n" +
                     "    <metrics>\n" +
                     "        <metric>com.hivemq.messages.incoming.total.count</metric>\n" +
                     "        <metric>com.hivemq.messages.outgoing.total.count</metric>\n" +
                     "        <metric enabled=\"false\">com.hivemq.messages.incoming.total.rate</metric>\n" +
                     "    </metrics>\n" +
-                    "</extension-configuration>";
+                    "</cloudwatch-extension-configuration>";
     @Rule
     public TemporaryFolder folder = new TemporaryFolder();
     private File root;
@@ -68,8 +68,8 @@ public class ConfigurationTest {
     @Test
     public void intervalConfigurationOK() throws IOException {
         String intervalConfig =
-                "<extension-configuration>\n" +
-                        "    <reportInterval>30</reportInterval>\n" + "</extension-configuration>";
+                "<cloudwatch-extension-configuration>\n" +
+                        "    <report-interval>30</report-interval>\n" + "</cloudwatch-extension-configuration>";
 
         try {
             Files.writeString(file.toPath(), intervalConfig);
@@ -86,8 +86,8 @@ public class ConfigurationTest {
     @Test
     public void intervalConfigurationNOK() throws IOException {
         String intervalConfig =
-                "<extension-configuration>\n" +
-                        "    <reportInterval>0</reportInterval>\n" + "</extension-configuration>";
+                "<cloudwatch-extension-configuration>\n" +
+                        "    <report-interval>0</report-interval>\n" + "</cloudwatch-extension-configuration>";
 
         try {
             Files.writeString(file.toPath(), intervalConfig);
@@ -105,8 +105,8 @@ public class ConfigurationTest {
     @Test
     public void timeoutConfigurationOK() throws IOException {
         String intervalConfig =
-                "<extension-configuration>\n" +
-                        "    <connectionTimeout>30</connectionTimeout>\n" + "</extension-configuration>";
+                "<cloudwatch-extension-configuration>\n" +
+                        "    <connection-timeout>30</connection-timeout>\n" + "</cloudwatch-extension-configuration>";
 
         try {
             Files.writeString(file.toPath(), intervalConfig);
@@ -123,8 +123,8 @@ public class ConfigurationTest {
     @Test
     public void timeoutConfigurationNOK() throws IOException {
         String intervalConfig =
-                "<extension-configuration>\n" +
-                        "    <connectionTimeout>0</connectionTimeout>\n" + "</extension-configuration>";
+                "<cloudwatch-extension-configuration>\n" +
+                        "    <connection-timeout>0</connection-timeout>\n" + "</cloudwatch-extension-configuration>";
 
         try {
             Files.writeString(file.toPath(), intervalConfig);

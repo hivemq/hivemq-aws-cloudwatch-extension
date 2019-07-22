@@ -22,7 +22,7 @@ import com.hivemq.extension.sdk.api.annotations.NotNull;
 import javax.xml.bind.annotation.*;
 
 @XmlType(propOrder = {})
-@XmlAccessorType(XmlAccessType.FIELD)
+@XmlAccessorType(XmlAccessType.NONE)
 @XmlRootElement(name = "metric")
 public class Metric {
 
