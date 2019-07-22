@@ -34,8 +34,8 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class ExtensionConfiguration {
 
-    private static @NotNull final String EXTENSION_CONFIG_FILE_NAME = "extension-config.xml";
-    private static @NotNull final Logger LOG = LoggerFactory.getLogger(ExtensionConfiguration.class);
+    private static final @NotNull String EXTENSION_CONFIG_FILE_NAME = "extension-config.xml";
+    private static final @NotNull Logger LOG = LoggerFactory.getLogger(ExtensionConfiguration.class);
 
     private final @NotNull ConfigurationXmlParser configurationXmlParser = new ConfigurationXmlParser();
     private final @NotNull ReadWriteLock lock = new ReentrantReadWriteLock();
@@ -59,22 +59,20 @@ public class ExtensionConfiguration {
     @NotNull
     private Config read(@NotNull final File file) {
 
-        @NotNull final Config defaultConfig = new Config();
+        final @NotNull Config defaultConfig = new Config();
 
-        if (!file.exists()) {
-            LOG.warn("CloudWatch metric extension configuration file {} missing, using defaults", file.getAbsolutePath());
-            return defaultConfig;
-        }
-
-        if (!file.canRead()) {
+        if (file.exists() && file.canRead() && file.length() >0 ) {
+            return doRead(file, defaultConfig);
+        } else {
             LOG.warn("Unable to read CloudWatch metric extension configuration file {}, using defaults", file.getAbsolutePath());
             return defaultConfig;
         }
+    }
 
+    private Config doRead(@NotNull final File file, @NotNull final Config defaultConfig) {
         try {
 
             final @NotNull Config newConfig = configurationXmlParser.unmarshalExtensionConfig(file);
-
             if (newConfig.getConnectionTimeout() < 1) {
                 LOG.warn("Connection timeout must be greater than 0, using default timeout " + defaultConfig.getConnectionTimeout());
                 newConfig.setConnectionTimeout(defaultConfig.getConnectionTimeout());
@@ -96,8 +94,8 @@ public class ExtensionConfiguration {
     public List<String> getEnabledMetrics() {
         if (this.enabledMetrics == null || this.enabledMetrics.isEmpty()) {
             final Lock writeLock = lock.writeLock();
-            writeLock.lock();
             try {
+                writeLock.lock();
                 this.enabledMetrics = readEnabledMetrics();
                 LOG.debug("Enabled metrics loaded.");
             } finally {
@@ -108,9 +106,7 @@ public class ExtensionConfiguration {
     }
 
     private List<String> readEnabledMetrics() {
-
         final Lock readLock = this.lock.readLock();
-
         try {
             readLock.lock();
             final List<String> newMetrics = new ArrayList<>();

@@ -33,10 +33,10 @@ import java.io.IOException;
 @ThreadSafe
 class ConfigurationXmlParser {
 
-    private static final Logger LOG = LoggerFactory.getLogger(ConfigurationXmlParser.class);
+    private static final @NotNull Logger LOG = LoggerFactory.getLogger(ConfigurationXmlParser.class);
 
     //jaxb context is thread safe
-    private @NotNull final JAXBContext jaxb;
+    private final @NotNull JAXBContext jaxb;
 
     ConfigurationXmlParser() {
         try {

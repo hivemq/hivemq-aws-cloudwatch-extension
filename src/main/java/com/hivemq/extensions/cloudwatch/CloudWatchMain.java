@@ -43,15 +43,10 @@ import java.io.File;
 
 public class CloudWatchMain implements ExtensionMain {
 
-    private static @NotNull
-    final Logger LOG = LoggerFactory.getLogger(CloudWatchMain.class);
-
-    private @NotNull
-    final ManagedExtensionExecutorService service = Services.extensionExecutorService();
-    private @NotNull
-    final MetricRegistry metricRegistry = Services.metricRegistry();
-    private @NotNull
-    final CloudWatchReporterService reporterService = new CloudWatchReporterService();
+    private static final @NotNull Logger LOG = LoggerFactory.getLogger(CloudWatchMain.class);
+    private final @NotNull ManagedExtensionExecutorService service = Services.extensionExecutorService();
+    private final @NotNull MetricRegistry metricRegistry = Services.metricRegistry();
+    private final @NotNull CloudWatchReporterService reporterService = new CloudWatchReporterService();
 
     @Override
     public final void extensionStart(@NotNull final ExtensionStartInput extensionStartInput,
