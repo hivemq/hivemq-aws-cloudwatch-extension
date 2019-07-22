@@ -36,14 +36,13 @@ class ConfigurationXmlParser {
     private static final Logger LOG = LoggerFactory.getLogger(ConfigurationXmlParser.class);
 
     //jaxb context is thread safe
-    private @NotNull
-    final JAXBContext jaxb;
+    private @NotNull final JAXBContext jaxb;
 
     ConfigurationXmlParser() {
         try {
             jaxb = JAXBContext.newInstance(Config.class, Metric.class);
         } catch (JAXBException e) {
-            //LOG.error("Error in the CloudWatch Extension. Could not initialize XML parser", e);
+            LOG.error("Error in the CloudWatch Extension. Could not initialize XML parser", e);
             throw new RuntimeException("Initialize XML parser Error", e);
         }
     }
@@ -54,7 +53,7 @@ class ConfigurationXmlParser {
             final Unmarshaller unmarshaller = jaxb.createUnmarshaller();
             return (Config) unmarshaller.unmarshal(file);
         } catch (JAXBException e) {
-            //LOG.error("Error in the CloudWatch Extension. Could not unmarshal XML configuration", e);
+            LOG.error("Error in the CloudWatch Extension. Could not unmarshal XML configuration", e);
             throw new IOException("Could not unmarshal XML configuration Error", e);
         }
     }

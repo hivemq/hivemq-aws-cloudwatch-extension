@@ -21,10 +21,8 @@ import java.util.concurrent.TimeUnit;
 
 class CloudWatchReporterService {
 
-    private static @NotNull
-    final String METRIC_NAMESPACE = "hivemq-metrics";
-    private static @NotNull
-    final Logger LOG = LoggerFactory.getLogger(CloudWatchReporterService.class);
+    private static @NotNull final String METRIC_NAMESPACE = "hivemq-metrics";
+    private static @NotNull final Logger LOG = LoggerFactory.getLogger(CloudWatchReporterService.class);
     private @Nullable CloudWatchReporter cloudWatchReporter = null;
 
     CloudWatchReporter getCloudWatchReporter() {

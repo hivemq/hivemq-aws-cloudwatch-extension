@@ -34,10 +34,8 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class ExtensionConfiguration {
 
-    private static @NotNull
-    final String EXTENSION_CONFIG_FILE_NAME = "extension-config.xml";
-    private static @NotNull
-    final Logger LOG = LoggerFactory.getLogger(ExtensionConfiguration.class);
+    private static @NotNull final String EXTENSION_CONFIG_FILE_NAME = "extension-config.xml";
+    private static @NotNull final Logger LOG = LoggerFactory.getLogger(ExtensionConfiguration.class);
 
     private final @NotNull ConfigurationXmlParser configurationXmlParser = new ConfigurationXmlParser();
     private final @NotNull ReadWriteLock lock = new ReentrantReadWriteLock();
