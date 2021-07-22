@@ -1,23 +1,39 @@
+/*
+ * Copyright 2019-present HiveMQ GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.hivemq.extensions.cloudwatch;
 
 import com.codahale.metrics.MetricRegistry;
 import com.hivemq.extension.sdk.api.services.ManagedExtensionExecutorService;
 import com.hivemq.extensions.cloudwatch.configuration.ExtensionConfiguration;
 import com.hivemq.extensions.cloudwatch.configuration.entities.Config;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.util.ArrayList;
+import java.util.List;
 
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.when;
 
 public class CloudWatchReporterServiceTest {
 
-    private ArrayList metrics = new ArrayList();
+    private List<String> metrics = new ArrayList<>();
     private Config config = new Config();
     private CloudWatchReporterService reporterService = new CloudWatchReporterService();
 
@@ -30,9 +46,9 @@ public class CloudWatchReporterServiceTest {
     @Mock
     private MetricRegistry metricRegistry;
 
-    @Before
+    @BeforeEach
     public void setUp() {
-        MockitoAnnotations.initMocks(this);
+        MockitoAnnotations.openMocks(this);
 
         metrics.add("metric1");
         metrics.add("metric2");
@@ -42,9 +58,8 @@ public class CloudWatchReporterServiceTest {
 
     @Test
     public void testStartCloudWatchReporter() {
-
         reporterService.startCloudWatchReporter(extensionConfiguration, service, metricRegistry);
-        assertTrue("CloudWatchReporter is started", reporterService.getCloudWatchReporter() != null);
+        assertNotNull(reporterService.getCloudWatchReporter(), "CloudWatchReporter is started");
         reporterService.stopCloudWatchReporter();
     }
 
@@ -52,6 +67,6 @@ public class CloudWatchReporterServiceTest {
     public void testStartCloudWatchReporterNotWhenEmptyMetrics() {
         when(extensionConfiguration.getEnabledMetrics()).thenReturn(new ArrayList<>());
         reporterService.startCloudWatchReporter(extensionConfiguration, service, metricRegistry);
-        assertNull("CloudWatchReporter not started", reporterService.getCloudWatchReporter());
+        assertNull(reporterService.getCloudWatchReporter(), "CloudWatchReporter not started");
     }
 }

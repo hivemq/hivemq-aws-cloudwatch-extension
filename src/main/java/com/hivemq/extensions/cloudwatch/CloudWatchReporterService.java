@@ -1,3 +1,18 @@
+/*
+ * Copyright 2019-present HiveMQ GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.hivemq.extensions.cloudwatch;
 
 import com.amazonaws.ClientConfiguration;
@@ -21,23 +36,25 @@ import java.util.concurrent.TimeUnit;
 
 class CloudWatchReporterService {
 
-    private static final @NotNull String METRIC_NAMESPACE = "hivemq-metrics";
     private static final @NotNull Logger LOG = LoggerFactory.getLogger(CloudWatchReporterService.class);
+
+    private static final @NotNull String METRIC_NAMESPACE = "hivemq-metrics";
+
     private @Nullable CloudWatchReporter cloudWatchReporter = null;
 
-    CloudWatchReporter getCloudWatchReporter() {
+    public @Nullable CloudWatchReporter getCloudWatchReporter() {
         return cloudWatchReporter;
     }
 
-    void startCloudWatchReporter(@NotNull final ExtensionConfiguration configuration,
-                                 @NotNull final ManagedExtensionExecutorService executorService,
-                                 @NotNull final MetricRegistry metricRegistry) {
+    void startCloudWatchReporter(final @NotNull ExtensionConfiguration configuration,
+                                 final @NotNull ManagedExtensionExecutorService executorService,
+                                 final @NotNull MetricRegistry metricRegistry) {
 
         Preconditions.checkNotNull(configuration, "ExtensionConfiguration must not be null");
         Preconditions.checkNotNull(executorService, "ExecutorService must not be null");
         Preconditions.checkNotNull(metricRegistry, "MetricRegistry must not be null");
 
-        @NotNull final Config cloudWatchConfig = configuration.getConfig();
+        final Config cloudWatchConfig = configuration.getConfig();
 
         if (configuration.getEnabledMetrics().isEmpty()) {
             LOG.warn("No hiveMQ metrics enabled, no CloudWatch report started");
@@ -62,16 +79,16 @@ class CloudWatchReporterService {
         }
     }
 
-    private class ConfiguredMetricsFilter implements MetricFilter {
-        private final Collection<String> metrics;
+    private static class ConfiguredMetricsFilter implements MetricFilter {
+        private final @NotNull Collection<String> metrics;
 
-        ConfiguredMetricsFilter(@NotNull final Collection<String> metrics) {
+        ConfiguredMetricsFilter(final @NotNull Collection<String> metrics) {
             this.metrics = metrics;
             Preconditions.checkNotNull(metrics, "Cloud Metrics must not be null");
         }
 
         @Override
-        public boolean matches(final String name, final Metric metric) {
+        public boolean matches(final @Nullable String name, final @Nullable Metric metric) {
             return metrics.contains(name);
         }
     }

@@ -1,23 +1,23 @@
 /*
- * Copyright 2019 dc-square GmbH
+ * Copyright 2019-present HiveMQ GmbH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
-
 package com.hivemq.extensions.cloudwatch.configuration.entities;
 
 import com.amazonaws.ClientConfiguration;
+import com.hivemq.extension.sdk.api.annotations.NotNull;
+import com.hivemq.extension.sdk.api.annotations.Nullable;
 
 import javax.xml.bind.annotation.*;
 import java.util.ArrayList;
@@ -37,14 +37,15 @@ public class Config {
     @XmlElement(name = "connection-timeout", required = true, defaultValue = "" + DEF_CONNECTION_TIMEOUT)
     private int connectionTimeout = DEF_CONNECTION_TIMEOUT;
 
+    @SuppressWarnings("FieldMayBeFinal")
     @XmlElementWrapper(name = "metrics")
     @XmlElement(name = "metric")
-    private List<Metric> metrics = new ArrayList<>();
+    private @Nullable List<Metric> metrics = new ArrayList<>();
 
     public Config() {
     }
 
-    public final List<Metric> getMetrics() {
+    public final @Nullable List<Metric> getMetrics() {
         return metrics;
     }
 
@@ -65,7 +66,7 @@ public class Config {
     }
 
     @Override
-    public final String toString() {
+    public final @NotNull String toString() {
         return "Config{" +
                 "reportInterval=" + reportInterval +
                 ", connectionTimeout=" + connectionTimeout +
