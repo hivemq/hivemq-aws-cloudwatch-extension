@@ -24,7 +24,7 @@ At the time of writing the AWS prices are the following:
 ====
 
 === Installation
-Unzip the file: `hivemq-cloudwatch-extension-<version>-distribution.zip` to the directory: `<HIVEMQ_HOME>/extensions`
+Unzip the file: `hivemq-cloudwatch-extension-<version>.zip` to the directory: `<HIVEMQ_HOME>/extensions`
 . A configuration file `extension-config.xml` can be found in the `hivemq-cloudwatch-extension` folder.
 The properties are preconfigured with standard settings and can be adapted to your needs (The meaning of the fields is explained below).
 . Start HiveMQ.
@@ -66,7 +66,7 @@ The following properties are available:
 </extension-configuration>
 ----
 A list of all available metrics can be found on the HiveMQ Documentation
-here at https://www.hivemq.com/docs/4.1/hivemq/monitoring.html#metrics[HiveMQ Metrics]
+here at https://www.hivemq.com/docs/hivemq/4.6/user-guide/monitoring.html#metrics[HiveMQ Metrics]
 
 
 == Contributing
@@ -75,6 +75,6 @@ If you want to contribute to HiveMQ Cloudwatch Extension, see the link:CONTRIBUT
 
 == License
 
-HiveMQ Cloudwatch Extension is licensed under the `APACHE LICENSE, VERSION 2.0`. A copy of the license can be found link:LICENSE.txt[here].
+HiveMQ Cloudwatch Extension is licensed under the `APACHE LICENSE, VERSION 2.0`. A copy of the license can be found link:LICENSE[here].
 
 
