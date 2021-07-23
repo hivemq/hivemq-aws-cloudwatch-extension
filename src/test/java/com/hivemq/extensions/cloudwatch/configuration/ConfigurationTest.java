@@ -30,6 +30,7 @@ import java.nio.file.Path;
 import static com.hivemq.extensions.cloudwatch.configuration.entities.Config.DEF_CONNECTION_TIMEOUT;
 import static com.hivemq.extensions.cloudwatch.configuration.entities.Config.DEF_REPORT_INTERVAL;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ConfigurationTest {
 
@@ -72,7 +73,8 @@ public class ConfigurationTest {
         final Config config = extensionConfiguration.getConfig();
 
         assertEquals(config.getReportInterval(), 10);
-        assertEquals(config.getConnectionTimeout(), 100);
+        assertTrue(config.getConnectionTimeout().isPresent());
+        assertEquals(config.getConnectionTimeout().get(), 100);
         assertEquals(config.getMetrics().size(), 3);
         assertEquals(extensionConfiguration.getEnabledMetrics().size(), 2);
     }
@@ -92,7 +94,7 @@ public class ConfigurationTest {
         }
         final Config config = new ExtensionConfiguration(root).getConfig();
         assertEquals(config.getReportInterval(), 30);
-        assertEquals(config.getConnectionTimeout(), DEF_CONNECTION_TIMEOUT);
+        assertTrue(config.getConnectionTimeout().isEmpty());
         assertEquals(config.getMetrics().size(), 0);
     }
 
@@ -110,7 +112,7 @@ public class ConfigurationTest {
         }
         final Config config = new ExtensionConfiguration(root).getConfig();
         assertEquals(config.getReportInterval(), DEF_REPORT_INTERVAL);
-        assertEquals(config.getConnectionTimeout(), DEF_CONNECTION_TIMEOUT);
+        assertTrue(config.getConnectionTimeout().isEmpty());
         assertEquals(config.getMetrics().size(), 0);
     }
 
@@ -130,7 +132,8 @@ public class ConfigurationTest {
         }
         final Config config = new ExtensionConfiguration(root).getConfig();
         assertEquals(config.getReportInterval(), DEF_REPORT_INTERVAL);
-        assertEquals(config.getConnectionTimeout(), 30);
+        assertTrue(config.getConnectionTimeout().isPresent());
+        assertEquals(config.getConnectionTimeout().get(), 30);
         assertEquals(config.getMetrics().size(), 0);
     }
 
@@ -148,7 +151,7 @@ public class ConfigurationTest {
         }
         final Config config = new ExtensionConfiguration(root).getConfig();
         assertEquals(config.getReportInterval(), DEF_REPORT_INTERVAL);
-        assertEquals(config.getConnectionTimeout(), DEF_CONNECTION_TIMEOUT);
+        assertTrue(config.getConnectionTimeout().isEmpty());
         assertEquals(config.getMetrics().size(), 0);
     }
 }

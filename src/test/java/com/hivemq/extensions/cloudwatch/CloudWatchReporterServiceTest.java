@@ -19,6 +19,7 @@ import com.codahale.metrics.MetricRegistry;
 import com.hivemq.extension.sdk.api.services.ManagedExtensionExecutorService;
 import com.hivemq.extensions.cloudwatch.configuration.ExtensionConfiguration;
 import com.hivemq.extensions.cloudwatch.configuration.entities.Config;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -49,6 +50,7 @@ public class CloudWatchReporterServiceTest {
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
+        System.setProperty("aws.region", "us-east-1");
 
         metrics.add("metric1");
         metrics.add("metric2");
@@ -68,5 +70,10 @@ public class CloudWatchReporterServiceTest {
         when(extensionConfiguration.getEnabledMetrics()).thenReturn(new ArrayList<>());
         reporterService.startCloudWatchReporter(extensionConfiguration, service, metricRegistry);
         assertNull(reporterService.getCloudWatchReporter(), "CloudWatchReporter not started");
+    }
+
+    @AfterEach
+    public void cleanUp() {
+        System.clearProperty("aws.region");
     }
 }

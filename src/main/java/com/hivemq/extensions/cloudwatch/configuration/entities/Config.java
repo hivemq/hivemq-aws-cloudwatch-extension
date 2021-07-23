@@ -15,13 +15,13 @@
  */
 package com.hivemq.extensions.cloudwatch.configuration.entities;
 
-import com.amazonaws.ClientConfiguration;
 import com.hivemq.extension.sdk.api.annotations.NotNull;
 import com.hivemq.extension.sdk.api.annotations.Nullable;
 
 import javax.xml.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @XmlRootElement(name = "cloudwatch-extension-configuration")
 @XmlType(propOrder = {})
@@ -29,13 +29,13 @@ import java.util.List;
 public class Config {
 
     public static final int DEF_REPORT_INTERVAL = 1;
-    public static final int DEF_CONNECTION_TIMEOUT = ClientConfiguration.DEFAULT_CONNECTION_TIMEOUT;
+    public static final @Nullable Integer DEF_CONNECTION_TIMEOUT = null;
 
     @XmlElement(name = "report-interval", required = true, defaultValue = "" + DEF_REPORT_INTERVAL)
     private int reportInterval = DEF_REPORT_INTERVAL;
 
-    @XmlElement(name = "connection-timeout", required = true, defaultValue = "" + DEF_CONNECTION_TIMEOUT)
-    private int connectionTimeout = DEF_CONNECTION_TIMEOUT;
+    @XmlElement(name = "connection-timeout", required = true)
+    private @Nullable Integer connectionTimeout = DEF_CONNECTION_TIMEOUT;
 
     @SuppressWarnings("FieldMayBeFinal")
     @XmlElementWrapper(name = "metrics")
@@ -53,15 +53,15 @@ public class Config {
         return this.reportInterval;
     }
 
-    public final void setReportInterval(int reportInterval) {
+    public final void setReportInterval(final int reportInterval) {
         this.reportInterval = reportInterval;
     }
 
-    public final int getConnectionTimeout() {
-        return this.connectionTimeout;
+    public final @NotNull Optional<Integer> getConnectionTimeout() {
+        return Optional.ofNullable(connectionTimeout);
     }
 
-    public final void setConnectionTimeout(int connectionTimeout) {
+    public final void setConnectionTimeout(final @Nullable Integer connectionTimeout) {
         this.connectionTimeout = connectionTimeout;
     }
 

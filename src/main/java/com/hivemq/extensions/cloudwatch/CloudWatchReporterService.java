@@ -15,23 +15,25 @@
  */
 package com.hivemq.extensions.cloudwatch;
 
-import com.amazonaws.ClientConfiguration;
-import com.amazonaws.auth.DefaultAWSCredentialsProviderChain;
-import com.amazonaws.services.cloudwatch.AmazonCloudWatchAsync;
-import com.amazonaws.services.cloudwatch.AmazonCloudWatchAsyncClientBuilder;
-import com.blacklocus.metrics.CloudWatchReporter;
 import com.codahale.metrics.Metric;
 import com.codahale.metrics.MetricFilter;
 import com.codahale.metrics.MetricRegistry;
-import com.google.common.base.Preconditions;
 import com.hivemq.extension.sdk.api.annotations.NotNull;
 import com.hivemq.extension.sdk.api.annotations.Nullable;
 import com.hivemq.extension.sdk.api.services.ManagedExtensionExecutorService;
 import com.hivemq.extensions.cloudwatch.configuration.ExtensionConfiguration;
 import com.hivemq.extensions.cloudwatch.configuration.entities.Config;
+import com.hivemq.extensions.cloudwatch.util.Checks;
+import io.github.azagniotov.metrics.reporter.cloudwatch.CloudWatchReporter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import software.amazon.awssdk.auth.credentials.DefaultCredentialsProvider;
+import software.amazon.awssdk.core.client.config.ClientAsyncConfiguration;
+import software.amazon.awssdk.core.client.config.ClientOverrideConfiguration;
+import software.amazon.awssdk.core.client.config.SdkAdvancedAsyncClientOption;
+import software.amazon.awssdk.services.cloudwatch.CloudWatchAsyncClient;
 
+import java.time.Duration;
 import java.util.Collection;
 import java.util.concurrent.TimeUnit;
 
@@ -51,28 +53,35 @@ class CloudWatchReporterService {
                                  final @NotNull ManagedExtensionExecutorService executorService,
                                  final @NotNull MetricRegistry metricRegistry) {
 
-        Preconditions.checkNotNull(configuration, "ExtensionConfiguration must not be null");
-        Preconditions.checkNotNull(executorService, "ExecutorService must not be null");
-        Preconditions.checkNotNull(metricRegistry, "MetricRegistry must not be null");
+        Checks.notNull(configuration, "ExtensionConfiguration");
+        Checks.notNull(executorService, "ExecutorService");
+        Checks.notNull(metricRegistry, "MetricRegistry");
 
         final Config cloudWatchConfig = configuration.getConfig();
 
         if (configuration.getEnabledMetrics().isEmpty()) {
             LOG.warn("No hiveMQ metrics enabled, no CloudWatch report started");
         } else {
-            final AmazonCloudWatchAsync cloudWatchAsync = AmazonCloudWatchAsyncClientBuilder
-                    .standard()
-                    .withCredentials(new DefaultAWSCredentialsProviderChain())
-                    .withClientConfiguration(new ClientConfiguration()
-                            .withConnectionTimeout(cloudWatchConfig.getConnectionTimeout()))
-                    .withExecutorFactory(() -> executorService)
+            final Duration apiTimeout;
+            if (cloudWatchConfig.getConnectionTimeout().isPresent()) {
+                apiTimeout = Duration.ofSeconds(cloudWatchConfig.getConnectionTimeout().get());
+            } else {
+                apiTimeout = null;
+            }
+
+            final CloudWatchAsyncClient cloudWatchAsync = CloudWatchAsyncClient.builder()
+                    .credentialsProvider(DefaultCredentialsProvider.create())
+                    .asyncConfiguration(ClientAsyncConfiguration.builder()
+                            .advancedOption(SdkAdvancedAsyncClientOption.FUTURE_COMPLETION_EXECUTOR, executorService)
+                            .build())
+                    .overrideConfiguration(ClientOverrideConfiguration.builder()
+                            .apiCallTimeout(apiTimeout)
+                            .build())
                     .build();
 
-            cloudWatchReporter = new CloudWatchReporter(
-                    metricRegistry, METRIC_NAMESPACE,
-                    new ConfiguredMetricsFilter(configuration.getEnabledMetrics()),
-                    cloudWatchAsync
-            );
+            cloudWatchReporter = CloudWatchReporter.forRegistry(metricRegistry, cloudWatchAsync, METRIC_NAMESPACE)
+                    .filter(new ConfiguredMetricsFilter(configuration.getEnabledMetrics()))
+                    .build();
             cloudWatchReporter.start(cloudWatchConfig.getReportInterval(), TimeUnit.MINUTES);
             LOG.info("Started CloudWatchReporter for {} HiveMQ metrics", configuration.getEnabledMetrics().size());
         }
@@ -90,7 +99,7 @@ class CloudWatchReporterService {
 
         ConfiguredMetricsFilter(final @NotNull Collection<String> metrics) {
             this.metrics = metrics;
-            Preconditions.checkNotNull(metrics, "Cloud Metrics must not be null");
+            Checks.notNull(metrics, "Cloud Metrics");
         }
 
         @Override

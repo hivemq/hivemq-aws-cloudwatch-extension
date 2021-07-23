@@ -15,7 +15,6 @@
  */
 package com.hivemq.extensions.cloudwatch.configuration;
 
-import com.google.common.collect.ImmutableList;
 import com.hivemq.extension.sdk.api.annotations.NotNull;
 import com.hivemq.extensions.cloudwatch.configuration.entities.Config;
 import com.hivemq.extensions.cloudwatch.configuration.entities.Metric;
@@ -25,6 +24,7 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
@@ -67,12 +67,12 @@ public class ExtensionConfiguration {
         }
     }
 
-    private Config doRead(final @NotNull File file, final @NotNull Config defaultConfig) {
+    private @NotNull Config doRead(final @NotNull File file, final @NotNull Config defaultConfig) {
         try {
             final Config newConfig = configurationXmlParser.unmarshalExtensionConfig(file);
-            if (newConfig.getConnectionTimeout() < 1) {
-                LOG.warn("Connection timeout must be greater than 0, using default timeout " + defaultConfig.getConnectionTimeout());
-                newConfig.setConnectionTimeout(defaultConfig.getConnectionTimeout());
+            if (newConfig.getConnectionTimeout().isPresent() && newConfig.getConnectionTimeout().get() < 1) {
+                LOG.warn("Connection timeout must be greater than 0, using default timeout");
+                newConfig.setConnectionTimeout(defaultConfig.getConnectionTimeout().orElse(null));
             }
 
             if (newConfig.getReportInterval() < 1) {
@@ -83,7 +83,7 @@ public class ExtensionConfiguration {
             return newConfig;
 
         } catch (final IOException e) {
-            LOG.warn("Could not read extension configuration file, reason: {}, using defaults {} ", e.getMessage(), defaultConfig.toString());
+            LOG.warn("Could not read extension configuration file, reason: {}, using defaults {} ", e.getMessage(), defaultConfig);
             return defaultConfig;
         }
     }
@@ -110,7 +110,7 @@ public class ExtensionConfiguration {
 
             if (this.config.getMetrics() == null || this.config.getMetrics().isEmpty()) {
                 LOG.error("Could not find any enabled HiveMQ metrics in configuration, no metrics were reported. ");
-                return ImmutableList.of();
+                return Collections.emptyList();
             }
             for (final Metric metric : this.config.getMetrics()) {
                 if (metric.isEnabled() && !metric.getValue().isEmpty()) {
@@ -118,7 +118,7 @@ public class ExtensionConfiguration {
                     LOG.trace("Added HiveMQ metric {} ", metric.getValue());
                 }
             }
-            return ImmutableList.copyOf(newMetrics);
+            return List.copyOf(newMetrics);
         } finally {
             readLock.unlock();
         }

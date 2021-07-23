@@ -29,8 +29,8 @@ repositories {
 }
 
 dependencies {
-    implementation("com.blacklocus:metrics-cloudwatch:${property("cloudwatch-metric.version")}")
-    implementation("com.amazonaws:aws-java-sdk-cloudwatch:${property("cloudwatch-sdk.version")}")
+    implementation("io.github.azagniotov:dropwizard-metrics-cloudwatch:${property("cloudwatch-metric.version")}")
+    implementation("software.amazon.awssdk:cloudwatch:${property("cloudwatch-sdk.version")}")
 
     // configuration
     implementation("jakarta.xml.bind:jakarta.xml.bind-api:${property("jakarta-xml-bind.version")}")
