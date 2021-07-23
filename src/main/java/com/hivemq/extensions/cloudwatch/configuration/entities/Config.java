@@ -34,7 +34,7 @@ public class Config {
     @XmlElement(name = "report-interval", required = true, defaultValue = "" + DEF_REPORT_INTERVAL)
     private int reportInterval = DEF_REPORT_INTERVAL;
 
-    @XmlElement(name = "connection-timeout", required = true)
+    @XmlElement(name = "connection-timeout", required = false)
     private @Nullable Integer connectionTimeout = DEF_CONNECTION_TIMEOUT;
 
     @SuppressWarnings("FieldMayBeFinal")
