@@ -128,7 +128,6 @@ public class ConfigurationTest {
             Files.writeString(file.toPath(), intervalConfig);
         } catch (SaslException e) {
             // expected
-            ;
         }
         final Config config = new ExtensionConfiguration(root).getConfig();
         assertEquals(config.getReportInterval(), DEF_REPORT_INTERVAL);
