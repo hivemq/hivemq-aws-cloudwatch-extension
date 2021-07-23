@@ -17,7 +17,8 @@ package com.hivemq.extensions.cloudwatch;
 
 import com.amazonaws.ClientConfiguration;
 import com.amazonaws.auth.DefaultAWSCredentialsProviderChain;
-import com.amazonaws.services.cloudwatch.AmazonCloudWatchAsyncClient;
+import com.amazonaws.services.cloudwatch.AmazonCloudWatchAsync;
+import com.amazonaws.services.cloudwatch.AmazonCloudWatchAsyncClientBuilder;
 import com.blacklocus.metrics.CloudWatchReporter;
 import com.codahale.metrics.Metric;
 import com.codahale.metrics.MetricFilter;
@@ -59,13 +60,18 @@ class CloudWatchReporterService {
         if (configuration.getEnabledMetrics().isEmpty()) {
             LOG.warn("No hiveMQ metrics enabled, no CloudWatch report started");
         } else {
+            final AmazonCloudWatchAsync cloudWatchAsync = AmazonCloudWatchAsyncClientBuilder
+                    .standard()
+                    .withCredentials(new DefaultAWSCredentialsProviderChain())
+                    .withClientConfiguration(new ClientConfiguration()
+                            .withConnectionTimeout(cloudWatchConfig.getConnectionTimeout()))
+                    .withExecutorFactory(() -> executorService)
+                    .build();
+
             cloudWatchReporter = new CloudWatchReporter(
                     metricRegistry, METRIC_NAMESPACE,
                     new ConfiguredMetricsFilter(configuration.getEnabledMetrics()),
-                    new AmazonCloudWatchAsyncClient(
-                            new DefaultAWSCredentialsProviderChain(),
-                            new ClientConfiguration().withConnectionTimeout(cloudWatchConfig.getConnectionTimeout()),
-                            executorService)
+                    cloudWatchAsync
             );
             cloudWatchReporter.start(cloudWatchConfig.getReportInterval(), TimeUnit.MINUTES);
             LOG.info("Started CloudWatchReporter for {} HiveMQ metrics", configuration.getEnabledMetrics().size());

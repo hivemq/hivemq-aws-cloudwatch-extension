@@ -29,8 +29,8 @@ repositories {
 }
 
 dependencies {
-
-    implementation("com.blacklocus:metrics-cloudwatch:${property("cloudwatch.version")}")
+    implementation("com.blacklocus:metrics-cloudwatch:${property("cloudwatch-metric.version")}")
+    implementation("com.amazonaws:aws-java-sdk-cloudwatch:${property("cloudwatch-sdk.version")}")
 
     // configuration
     implementation("jakarta.xml.bind:jakarta.xml.bind-api:${property("jakarta-xml-bind.version")}")
@@ -50,14 +50,6 @@ tasks.withType<Test>().configureEach {
     useJUnitPlatform()
 }
 
-/* ******************** integration test ******************** */
-
-dependencies {
-    integrationTestImplementation("com.hivemq:hivemq-mqtt-client:${property("hivemq-mqtt-client.version")}")
-    integrationTestImplementation("com.hivemq:hivemq-testcontainer-junit5:${property("hivemq-testcontainer.version")}")
-    integrationTestImplementation("ch.qos.logback:logback-classic:${property("logback-classic.version")}")
-}
-
 /* ******************** checks ******************** */
 
 license {
@@ -68,7 +60,7 @@ license {
 /* ******************** debugging ******************** */
 
 tasks.prepareHivemqHome {
-    hivemqHomeDirectory.set(file("/your/path/to/hivemq-<VERSION>.zip"))
+    hivemqHomeDirectory.set(file("/your/path/to/hivemq-<VERSION>"))
 }
 
 tasks.runHivemqWithExtension {
