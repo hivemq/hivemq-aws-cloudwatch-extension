@@ -41,7 +41,7 @@ class CloudWatchReporterService {
 
     private static final @NotNull Logger LOG = LoggerFactory.getLogger(CloudWatchReporterService.class);
 
-    private static final @NotNull String METRIC_NAMESPACE = "hivemq-metrics";
+    private static final @NotNull String METRIC_NAMESPACE = "HiveMQ";
 
     private @Nullable CloudWatchReporter cloudWatchReporter = null;
 
@@ -60,7 +60,7 @@ class CloudWatchReporterService {
         final Config cloudWatchConfig = configuration.getConfig();
 
         if (configuration.getEnabledMetrics().isEmpty()) {
-            LOG.warn("No hiveMQ metrics enabled, no CloudWatch report started");
+            LOG.warn("No HiveMQ metrics enabled, no CloudWatch report started");
         } else {
             final Duration apiTimeout;
             if (cloudWatchConfig.getConnectionTimeout().isPresent()) {
