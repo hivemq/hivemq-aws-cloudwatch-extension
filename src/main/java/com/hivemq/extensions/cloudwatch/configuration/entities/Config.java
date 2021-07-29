@@ -29,13 +29,13 @@ import java.util.Optional;
 public class Config {
 
     public static final int DEF_REPORT_INTERVAL = 1;
-    public static final @Nullable Integer DEF_CONNECTION_TIMEOUT = null;
+    public static final @Nullable Integer DEF_API_TIMEOUT = null;
 
     @XmlElement(name = "report-interval", required = true, defaultValue = "" + DEF_REPORT_INTERVAL)
     private int reportInterval = DEF_REPORT_INTERVAL;
 
-    @XmlElement(name = "connection-timeout", required = false)
-    private @Nullable Integer connectionTimeout = DEF_CONNECTION_TIMEOUT;
+    @XmlElement(name = "api-timeout")
+    private @Nullable Integer apiTimeout = DEF_API_TIMEOUT;
 
     @SuppressWarnings("FieldMayBeFinal")
     @XmlElementWrapper(name = "metrics")
@@ -57,19 +57,19 @@ public class Config {
         this.reportInterval = reportInterval;
     }
 
-    public final @NotNull Optional<Integer> getConnectionTimeout() {
-        return Optional.ofNullable(connectionTimeout);
+    public final @NotNull Optional<Integer> getApiTimeout() {
+        return Optional.ofNullable(apiTimeout);
     }
 
-    public final void setConnectionTimeout(final @Nullable Integer connectionTimeout) {
-        this.connectionTimeout = connectionTimeout;
+    public final void setApiTimeout(final @Nullable Integer apiTimeout) {
+        this.apiTimeout = apiTimeout;
     }
 
     @Override
     public final @NotNull String toString() {
         return "Config{" +
                 "reportInterval=" + reportInterval +
-                ", connectionTimeout=" + connectionTimeout +
+                ", connectionTimeout=" + apiTimeout +
                 ", metrics=" + metrics +
                 '}';
     }

@@ -70,9 +70,9 @@ public class ExtensionConfiguration {
     private @NotNull Config doRead(final @NotNull File file, final @NotNull Config defaultConfig) {
         try {
             final Config newConfig = configurationXmlParser.unmarshalExtensionConfig(file);
-            if (newConfig.getConnectionTimeout().isPresent() && newConfig.getConnectionTimeout().get() < 1) {
+            if (newConfig.getApiTimeout().isPresent() && newConfig.getApiTimeout().get() < 1) {
                 LOG.warn("Connection timeout must be greater than 0, using default timeout");
-                newConfig.setConnectionTimeout(defaultConfig.getConnectionTimeout().orElse(null));
+                newConfig.setApiTimeout(defaultConfig.getApiTimeout().orElse(null));
             }
 
             if (newConfig.getReportInterval() < 1) {

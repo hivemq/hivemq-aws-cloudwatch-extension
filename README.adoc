@@ -41,27 +41,23 @@ The following properties are available:
 |===
 | Property | Description
 
-| <reportInterval>
-| A value in minutes which sets the reporting interval (defaults to 1 minute)
-| <connectionTimeout>
-| The connection timeout in ms. (If not set defaults to AWS SDK default)
-| <metric enabled="{true/false}">
-| a metric name (from a list of metrics) which should be reported to CloudWatch
+| report-interval | A value in minutes which sets the reporting interval (defaults to 1 minute)
+| api-timeout | The connection timeout in ms. (If not set defaults to AWS SDK default)
+| metric enabled="{true/false}" | a metric name (from a list of metrics) which should be reported to CloudWatch
 |===
 
 .Example Configuration
 [source]
 ----
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<extension-configuration>
-    <reportInverval>1</reportInverval>
-       <connectionTimeout>50</connectionTimeout>
-       <metrics>
-           <metric>com.hivemq.messages.incoming.total.count</metric>
-           <metric>com.hivemq.messages.outgoing.total.count</metric>
-           <metric enabled="false">com.hivemq.messages.incoming.total.rate</metric>
-       </metrics>
-</extension-configuration>
+<cloudwatch-extension-configuration>
+    <report-interval>1</report-interval>
+    <metrics>
+        <metric>com.hivemq.messages.incoming.total.count</metric>
+        <metric>com.hivemq.messages.outgoing.total.count</metric>
+        <metric enabled="false">com.hivemq.messages.incoming.total.rate</metric>
+    </metrics>
+</cloudwatch-extension-configuration>
 ----
 A list of all available metrics can be found on the HiveMQ Documentation
 here at https://www.hivemq.com/docs/hivemq/4.6/user-guide/monitoring.html#metrics[HiveMQ Metrics]

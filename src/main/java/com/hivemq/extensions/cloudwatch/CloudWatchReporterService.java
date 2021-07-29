@@ -63,8 +63,8 @@ class CloudWatchReporterService {
             LOG.warn("No HiveMQ metrics enabled, no CloudWatch report started");
         } else {
             final Duration apiTimeout;
-            if (cloudWatchConfig.getConnectionTimeout().isPresent()) {
-                apiTimeout = Duration.ofMillis(cloudWatchConfig.getConnectionTimeout().get());
+            if (cloudWatchConfig.getApiTimeout().isPresent()) {
+                apiTimeout = Duration.ofMillis(cloudWatchConfig.getApiTimeout().get());
             } else {
                 apiTimeout = null;
             }
@@ -76,6 +76,7 @@ class CloudWatchReporterService {
                             .build())
                     .overrideConfiguration(ClientOverrideConfiguration.builder()
                             .apiCallTimeout(apiTimeout)
+                            .apiCallAttemptTimeout(apiTimeout)
                             .build())
                     .build();
 
