@@ -42,7 +42,7 @@ The following properties are available:
 | Property | Description
 
 | report-interval | A value in minutes which sets the reporting interval (defaults to 1 minute)
-| api-timeout | The connection timeout in ms. (If not set defaults to AWS SDK default)
+| api-timeout | The api call and api attempt timeout in ms. (If not set defaults to AWS SDK default)
 | metric enabled="{true/false}" | a metric name (from a list of metrics) which should be reported to CloudWatch
 |===
 
