@@ -15,7 +15,7 @@ hivemqExtension {
     priority.set(1000)
     startPriority.set(1000)
     mainClass.set("$group.cloudwatch.CloudWatchMain")
-    sdkVersion.set("$version")
+    sdkVersion.set("${property("hivemq-extension-sdk.version")}")
 
     resources {
         from("LICENSE")

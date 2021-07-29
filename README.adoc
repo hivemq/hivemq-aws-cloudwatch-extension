@@ -1,19 +1,19 @@
-= HiveMQ AWS Cloudwatch Extension
+= HiveMQ AWS CloudWatch Extension
 
 
 == Purpose
 
-This Extension allows to report HiveMQ metrics to AWS Cloudwatch.
+This HiveMQ Extension allows HiveMQ to report its metrics to AWS CloudWatch.
 
-It is possible to send every HiveMQ metric to Cloudwatch. Every metric which should be reported
-must be configured explicitly to reduce the costs, since Cloudwatch can be expensive if you
+It is possible to send every HiveMQ metric to CloudWatch. Every metric which should be reported
+must be configured explicitly to reduce the costs, since CloudWatch can be expensive if you
 publish too much (unnecessary) data.
 
 
 [CAUTION]
-.AWS Cloudwatch costs
+.AWS CloudWatch costs
 ====
-AWS Cloudwatch metrics can be *very* expensive. So please make sure you really want to report the specified metrics.
+AWS CloudWatch metrics can be *very* expensive. So please make sure you really want to report the specified metrics.
 You can find the full AWS pricing https://aws.amazon.com/cloudwatch/pricing/[here].
 
 At the time of writing the AWS prices are the following:
@@ -24,15 +24,13 @@ At the time of writing the AWS prices are the following:
 ====
 
 === Installation
-Unzip the file: `hivemq-cloudwatch-extension-<version>.zip` to the directory: `<HIVEMQ_HOME>/extensions`
-. A configuration file `extension-config.xml` can be found in the `hivemq-cloudwatch-extension` folder.
+Unzip the file: `hivemq-cloudwatch-extension-<version>.zip` to the directory: `<HIVEMQ_HOME>/extensions`. A configuration file `extension-config.xml` can be found in the `hivemq-cloudwatch-extension` folder.
 The properties are preconfigured with standard settings and can be adapted to your needs (The meaning of the fields is explained below).
-. Start HiveMQ.
 
 
 == Configuration
 
-The Cloudwatch extension uses its own configuration file 'extension-config.xml'.
+The CloudWatch extension uses its own configuration file 'extension-config.xml'.
 
 
 === extension-config.xml
@@ -47,7 +45,7 @@ The following properties are available:
 | <connectionTimeout>
 | The connection timeout in ms. The default is the `com.amazonaws.ClientConfiguration.	DEFAULT_CONNECTION_TIMEOUT`
 | <metric enabled="{true/false}">
-| a metric name (from a list of metrics) which should be reported to Cloudwatch
+| a metric name (from a list of metrics) which should be reported to CloudWatch
 |===
 
 
@@ -71,10 +69,10 @@ here at https://www.hivemq.com/docs/hivemq/4.6/user-guide/monitoring.html#metric
 
 == Contributing
 
-If you want to contribute to HiveMQ Cloudwatch Extension, see the link:CONTRIBUTING.md[contribution guidelines].
+If you want to contribute to HiveMQ CloudWatch Extension, see the link:CONTRIBUTING.md[contribution guidelines].
 
 == License
 
-HiveMQ Cloudwatch Extension is licensed under the `APACHE LICENSE, VERSION 2.0`. A copy of the license can be found link:LICENSE[here].
+HiveMQ CloudWatch Extension is licensed under the `APACHE LICENSE, VERSION 2.0`. A copy of the license can be found link:LICENSE[here].
 
 
