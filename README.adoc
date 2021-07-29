@@ -18,7 +18,7 @@ You can find the full AWS pricing https://aws.amazon.com/cloudwatch/pricing/[her
 
 At the time of writing the AWS prices are the following:
 
-* `$0.50` per custom metric
+* `$0.30` per custom metric (for the first 10 000 metrics)
 * `$0.01` per 1000 _GetMetricStatistics_, _ListMetrics_, or _PutMetricData_ requests
 
 ====
