@@ -41,7 +41,7 @@ class CloudWatchReporterService {
 
     private static final @NotNull Logger LOG = LoggerFactory.getLogger(CloudWatchReporterService.class);
 
-    private static final @NotNull String METRIC_NAMESPACE = "HiveMQ";
+    private static final @NotNull String METRIC_NAMESPACE = "hivemq-metrics";
 
     private @Nullable CloudWatchReporter cloudWatchReporter = null;
 
