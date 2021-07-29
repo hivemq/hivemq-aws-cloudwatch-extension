@@ -64,7 +64,7 @@ class CloudWatchReporterService {
         } else {
             final Duration apiTimeout;
             if (cloudWatchConfig.getConnectionTimeout().isPresent()) {
-                apiTimeout = Duration.ofSeconds(cloudWatchConfig.getConnectionTimeout().get());
+                apiTimeout = Duration.ofMillis(cloudWatchConfig.getConnectionTimeout().get());
             } else {
                 apiTimeout = null;
             }

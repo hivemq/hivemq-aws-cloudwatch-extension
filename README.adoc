@@ -24,14 +24,15 @@ At the time of writing the AWS prices are the following:
 ====
 
 === Installation
-Unzip the file: `hivemq-cloudwatch-extension-<version>.zip` to the directory: `<HIVEMQ_HOME>/extensions`. A configuration file `extension-config.xml` can be found in the `hivemq-cloudwatch-extension` folder.
-The properties are preconfigured with standard settings and can be adapted to your needs (The meaning of the fields is explained below).
+
+* Download the extension from the {{< targetlink "GitHub Releases Page" "https://github.com/hivemq/hivemq-cloudwatch-extension"  "_blank" >}}.
+* Copy the content of the zip file to the `extensions` folder of your HiveMQ nodes.
+* Modify the `extension-config.xml` file for your needs.
 
 
-== Configuration
+== Extension Configuration
 
 The CloudWatch extension uses its own configuration file 'extension-config.xml'.
-
 
 === extension-config.xml
 
@@ -43,11 +44,10 @@ The following properties are available:
 | <reportInterval>
 | A value in minutes which sets the reporting interval (defaults to 1 minute)
 | <connectionTimeout>
-| The connection timeout in ms. The default is the `com.amazonaws.ClientConfiguration.	DEFAULT_CONNECTION_TIMEOUT`
+| The connection timeout in ms. (If not set defaults to AWS SDK default)
 | <metric enabled="{true/false}">
 | a metric name (from a list of metrics) which should be reported to CloudWatch
 |===
-
 
 .Example Configuration
 [source]
@@ -65,6 +65,10 @@ The following properties are available:
 ----
 A list of all available metrics can be found on the HiveMQ Documentation
 here at https://www.hivemq.com/docs/hivemq/4.6/user-guide/monitoring.html#metrics[HiveMQ Metrics]
+
+== CloudWatch configuration
+
+The extension needs permission to be able to publish metrics to AWS CloudWatch. Simply create an AWS *IAM Role* with a custom *Policy* that grants the *CloudWatch:PutMetricData Permission* and apply it to the HiveMQ instance.
 
 
 == Contributing
