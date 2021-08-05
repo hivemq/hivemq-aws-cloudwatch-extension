@@ -36,7 +36,7 @@ public class ConfigurationTest {
     private static final @NotNull String extensionContent =
             "<cloudwatch-extension-configuration>\n" +
                     "    <report-interval>10</report-interval>\n" +
-                    "    <connection-timeout>100</connection-timeout>\n" +
+                    "    <api-timeout>100</api-timeout>\n" +
                     "    <metrics>\n" +
                     "        <metric>com.hivemq.messages.incoming.total.count</metric>\n" +
                     "        <metric>com.hivemq.messages.outgoing.total.count</metric>\n" +
@@ -120,7 +120,7 @@ public class ConfigurationTest {
     public void timeoutConfigurationOK() throws IOException {
         final String intervalConfig =
                 "<cloudwatch-extension-configuration>\n" +
-                        "    <connection-timeout>30</connection-timeout>\n" +
+                        "    <api-timeout>30</api-timeout>\n" +
                         "</cloudwatch-extension-configuration>";
 
         try {
@@ -139,7 +139,7 @@ public class ConfigurationTest {
     public void timeoutConfigurationNOK() throws IOException {
         final String intervalConfig =
                 "<cloudwatch-extension-configuration>\n" +
-                        "    <connection-timeout>0</connection-timeout>\n" +
+                        "    <api-timeout>0</api-timeout>\n" +
                         "</cloudwatch-extension-configuration>";
 
         try {
