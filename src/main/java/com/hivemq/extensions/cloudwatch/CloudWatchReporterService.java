@@ -23,7 +23,6 @@ import com.hivemq.extension.sdk.api.annotations.Nullable;
 import com.hivemq.extension.sdk.api.services.ManagedExtensionExecutorService;
 import com.hivemq.extensions.cloudwatch.configuration.ExtensionConfiguration;
 import com.hivemq.extensions.cloudwatch.configuration.entities.Config;
-import com.hivemq.extensions.cloudwatch.util.Checks;
 import io.github.azagniotov.metrics.reporter.cloudwatch.CloudWatchReporter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,11 +51,6 @@ class CloudWatchReporterService {
     void startCloudWatchReporter(final @NotNull ExtensionConfiguration configuration,
                                  final @NotNull ManagedExtensionExecutorService executorService,
                                  final @NotNull MetricRegistry metricRegistry) {
-
-        Checks.notNull(configuration, "ExtensionConfiguration");
-        Checks.notNull(executorService, "ExecutorService");
-        Checks.notNull(metricRegistry, "MetricRegistry");
-
         final Config cloudWatchConfig = configuration.getConfig();
 
         if (configuration.getEnabledMetrics().isEmpty()) {
@@ -100,7 +94,6 @@ class CloudWatchReporterService {
 
         ConfiguredMetricsFilter(final @NotNull Collection<String> metrics) {
             this.metrics = metrics;
-            Checks.notNull(metrics, "Cloud Metrics");
         }
 
         @Override

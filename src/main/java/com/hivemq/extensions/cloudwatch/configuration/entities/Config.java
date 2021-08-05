@@ -42,8 +42,6 @@ public class Config {
     @XmlElement(name = "metric")
     private @Nullable List<Metric> metrics = new ArrayList<>();
 
-    public Config() {
-    }
 
     public final @Nullable List<Metric> getMetrics() {
         return metrics;

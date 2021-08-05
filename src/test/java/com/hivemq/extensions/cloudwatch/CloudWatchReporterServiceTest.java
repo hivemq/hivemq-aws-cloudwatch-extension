@@ -16,41 +16,40 @@
 package com.hivemq.extensions.cloudwatch;
 
 import com.codahale.metrics.MetricRegistry;
+import com.hivemq.extension.sdk.api.annotations.NotNull;
 import com.hivemq.extension.sdk.api.services.ManagedExtensionExecutorService;
 import com.hivemq.extensions.cloudwatch.configuration.ExtensionConfiguration;
 import com.hivemq.extensions.cloudwatch.configuration.entities.Config;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class CloudWatchReporterServiceTest {
 
-    private List<String> metrics = new ArrayList<>();
-    private Config config = new Config();
-    private CloudWatchReporterService reporterService = new CloudWatchReporterService();
+    private final @NotNull CloudWatchReporterService reporterService = new CloudWatchReporterService();
 
-    @Mock
-    private ExtensionConfiguration extensionConfiguration;
-
-    @Mock
-    private ManagedExtensionExecutorService service;
-
-    @Mock
-    private MetricRegistry metricRegistry;
+    private @NotNull ExtensionConfiguration extensionConfiguration;
+    private @NotNull ManagedExtensionExecutorService service;
+    private @NotNull MetricRegistry metricRegistry;
 
     @BeforeEach
     public void setUp() {
-        MockitoAnnotations.openMocks(this);
+        extensionConfiguration = mock(ExtensionConfiguration.class);
+        service = mock(ManagedExtensionExecutorService.class);
+        metricRegistry = mock(MetricRegistry.class);
+
         System.setProperty("aws.region", "us-east-1");
+
+        final List<String> metrics = new ArrayList<>();
+        final Config config = new Config();
 
         metrics.add("metric1");
         metrics.add("metric2");

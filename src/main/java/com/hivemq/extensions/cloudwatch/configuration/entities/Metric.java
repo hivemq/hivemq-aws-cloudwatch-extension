@@ -22,18 +22,15 @@ import javax.xml.bind.annotation.*;
 @XmlType(propOrder = {})
 @XmlAccessorType(XmlAccessType.NONE)
 @XmlRootElement(name = "metric")
+@SuppressWarnings("FieldMayBeFinal")
 public class Metric {
 
-    @SuppressWarnings("FieldMayBeFinal")
     @XmlAttribute(name = "enabled")
     private boolean enabled = true;
 
-    @SuppressWarnings("FieldMayBeFinal")
     @XmlValue()
     private @NotNull String value = "";
 
-    public Metric() {
-    }
 
     public boolean isEnabled() {
         return enabled;

@@ -43,8 +43,8 @@ public class ConfigurationTest {
                     "        <metric enabled=\"false\">com.hivemq.messages.incoming.total.rate</metric>\n" +
                     "    </metrics>\n" +
                     "</cloudwatch-extension-configuration>";
-    private File root;
-    private File file;
+    private @NotNull File root;
+    private @NotNull File file;
 
     @BeforeEach
     public void setUp(final @NotNull @TempDir Path tempDir) throws Exception {
@@ -125,7 +125,7 @@ public class ConfigurationTest {
 
         try {
             Files.writeString(file.toPath(), intervalConfig);
-        } catch (SaslException e) {
+        } catch (final SaslException e) {
             // expected
         }
         final Config config = new ExtensionConfiguration(root).getConfig();
