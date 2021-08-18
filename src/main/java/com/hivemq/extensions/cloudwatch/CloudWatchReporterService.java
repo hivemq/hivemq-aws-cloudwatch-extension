@@ -36,6 +36,9 @@ import java.time.Duration;
 import java.util.Collection;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * @author Anja Helmbrecht-Schaar
+ */
 class CloudWatchReporterService {
 
     private static final @NotNull Logger LOG = LoggerFactory.getLogger(CloudWatchReporterService.class);

@@ -23,6 +23,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * @author Anja Helmbrecht-Schaar
+ */
 @XmlRootElement(name = "cloudwatch-extension-configuration")
 @XmlType(propOrder = {})
 @XmlAccessorType(XmlAccessType.NONE)

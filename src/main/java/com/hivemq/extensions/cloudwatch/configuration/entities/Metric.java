@@ -19,6 +19,9 @@ import com.hivemq.extension.sdk.api.annotations.NotNull;
 
 import javax.xml.bind.annotation.*;
 
+/**
+ * @author Anja Helmbrecht-Schaar
+ */
 @XmlType(propOrder = {})
 @XmlAccessorType(XmlAccessType.NONE)
 @XmlRootElement(name = "metric")

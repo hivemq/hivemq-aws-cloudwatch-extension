@@ -37,7 +37,6 @@ import java.io.File;
  *
  * @author Anja Helmbrecht-Schaar
  */
-
 public class CloudWatchMain implements ExtensionMain {
 
     private static final @NotNull Logger LOG = LoggerFactory.getLogger(CloudWatchMain.class);
@@ -66,5 +65,4 @@ public class CloudWatchMain implements ExtensionMain {
         reporterService.stopCloudWatchReporter();
         LOG.info("Stop {}", extensionStopInput.getExtensionInformation().getName());
     }
-
 }

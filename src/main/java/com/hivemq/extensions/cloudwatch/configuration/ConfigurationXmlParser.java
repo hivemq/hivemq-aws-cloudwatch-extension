@@ -28,6 +28,9 @@ import javax.xml.bind.Unmarshaller;
 import java.io.File;
 import java.io.IOException;
 
+/**
+ * @author Anja Helmbrecht-Schaar
+ */
 @ThreadSafe
 class ConfigurationXmlParser {
 
@@ -54,5 +57,4 @@ class ConfigurationXmlParser {
             throw new IOException("Could not unmarshal XML configuration Error", e);
         }
     }
-
 }

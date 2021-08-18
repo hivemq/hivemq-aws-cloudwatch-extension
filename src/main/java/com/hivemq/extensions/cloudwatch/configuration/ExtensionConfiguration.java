@@ -30,6 +30,9 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
+/**
+ * @author Anja Helmbrecht-Schaar
+ */
 public class ExtensionConfiguration {
 
     private static final @NotNull Logger LOG = LoggerFactory.getLogger(ExtensionConfiguration.class);
@@ -41,7 +44,6 @@ public class ExtensionConfiguration {
     private final @NotNull Config config;
 
     private @NotNull List<String> enabledMetrics = new ArrayList<>();
-
 
     public ExtensionConfiguration(final @NotNull File extensionHomeFolder) {
         this.config = read(new File(extensionHomeFolder, EXTENSION_CONFIG_FILE_NAME));
