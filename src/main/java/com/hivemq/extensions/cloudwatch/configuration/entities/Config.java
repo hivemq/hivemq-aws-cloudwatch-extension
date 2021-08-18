@@ -45,13 +45,12 @@ public class Config {
     @XmlElement(name = "metric")
     private @Nullable List<Metric> metrics = new ArrayList<>();
 
-
     public final @Nullable List<Metric> getMetrics() {
         return metrics;
     }
 
     public final int getReportInterval() {
-        return this.reportInterval;
+        return reportInterval;
     }
 
     public final void setReportInterval(final int reportInterval) {
@@ -70,7 +69,7 @@ public class Config {
     public final @NotNull String toString() {
         return "Config{" +
                 "reportInterval=" + reportInterval +
-                ", connectionTimeout=" + apiTimeout +
+                ", apiTimeout=" + apiTimeout +
                 ", metrics=" + metrics +
                 '}';
     }

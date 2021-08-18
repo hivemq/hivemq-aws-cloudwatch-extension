@@ -34,7 +34,6 @@ public class Metric {
     @XmlValue()
     private @NotNull String value = "";
 
-
     public boolean isEnabled() {
         return enabled;
     }
