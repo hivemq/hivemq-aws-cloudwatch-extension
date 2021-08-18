@@ -45,26 +45,23 @@ class CloudWatchReporterService {
 
     private static final @NotNull String METRIC_NAMESPACE = "hivemq-metrics";
 
-    private @Nullable CloudWatchReporter cloudWatchReporter = null;
+    private @Nullable CloudWatchReporter cloudWatchReporter;
 
     public @Nullable CloudWatchReporter getCloudWatchReporter() {
         return cloudWatchReporter;
     }
 
-    void startCloudWatchReporter(final @NotNull ExtensionConfiguration configuration,
-                                 final @NotNull ManagedExtensionExecutorService executorService,
-                                 final @NotNull MetricRegistry metricRegistry) {
+    void startCloudWatchReporter(
+            final @NotNull ExtensionConfiguration configuration,
+            final @NotNull ManagedExtensionExecutorService executorService,
+            final @NotNull MetricRegistry metricRegistry) {
+
         final Config cloudWatchConfig = configuration.getConfig();
 
         if (configuration.getEnabledMetrics().isEmpty()) {
             LOG.warn("No HiveMQ metrics enabled, no CloudWatch report started");
         } else {
-            final Duration apiTimeout;
-            if (cloudWatchConfig.getApiTimeout().isPresent()) {
-                apiTimeout = Duration.ofMillis(cloudWatchConfig.getApiTimeout().get());
-            } else {
-                apiTimeout = null;
-            }
+            final Duration apiTimeout = cloudWatchConfig.getApiTimeout().map(Duration::ofMillis).orElse(null);
 
             final CloudWatchAsyncClient cloudWatchAsync = CloudWatchAsyncClient.builder()
                     .credentialsProvider(DefaultCredentialsProvider.create())
@@ -93,6 +90,7 @@ class CloudWatchReporterService {
     }
 
     private static class ConfiguredMetricsFilter implements MetricFilter {
+
         private final @NotNull Collection<String> metrics;
 
         ConfiguredMetricsFilter(final @NotNull Collection<String> metrics) {
@@ -104,5 +102,4 @@ class CloudWatchReporterService {
             return metrics.contains(name);
         }
     }
-
 }

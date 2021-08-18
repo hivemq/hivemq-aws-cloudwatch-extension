@@ -46,8 +46,10 @@ public class CloudWatchMain implements ExtensionMain {
     private final @NotNull CloudWatchReporterService reporterService = new CloudWatchReporterService();
 
     @Override
-    public final void extensionStart(final @NotNull ExtensionStartInput extensionStartInput,
-                                     final @NotNull ExtensionStartOutput extensionStartOutput) {
+    public final void extensionStart(
+            final @NotNull ExtensionStartInput extensionStartInput,
+            final @NotNull ExtensionStartOutput extensionStartOutput) {
+
         try {
             final File extensionHomeFolder = extensionStartInput.getExtensionInformation().getExtensionHomeFolder();
             final ExtensionConfiguration extensionConfiguration = new ExtensionConfiguration(extensionHomeFolder);
@@ -60,8 +62,10 @@ public class CloudWatchMain implements ExtensionMain {
     }
 
     @Override
-    public final void extensionStop(final @NotNull ExtensionStopInput extensionStopInput,
-                                    final @NotNull ExtensionStopOutput extensionStopOutput) {
+    public final void extensionStop(
+            final @NotNull ExtensionStopInput extensionStopInput,
+            final @NotNull ExtensionStopOutput extensionStopOutput) {
+
         reporterService.stopCloudWatchReporter();
         LOG.info("Stop {}", extensionStopInput.getExtensionInformation().getName());
     }
