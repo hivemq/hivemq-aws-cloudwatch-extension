@@ -46,11 +46,11 @@ public class ExtensionConfiguration {
     private @NotNull List<String> enabledMetrics = new ArrayList<>();
 
     public ExtensionConfiguration(final @NotNull File extensionHomeFolder) {
-        this.config = read(new File(extensionHomeFolder, EXTENSION_CONFIG_FILE_NAME));
+        config = read(new File(extensionHomeFolder, EXTENSION_CONFIG_FILE_NAME));
     }
 
     public @NotNull Config getConfig() {
-        return this.config;
+        return config;
     }
 
     /**
@@ -78,7 +78,7 @@ public class ExtensionConfiguration {
             }
 
             if (newConfig.getReportInterval() < 1) {
-                LOG.warn("Report interval must be greater than 0, using default interval " + defaultConfig.getReportInterval());
+                LOG.warn("Report interval must be greater than 0, using default interval {}", defaultConfig.getReportInterval());
                 newConfig.setReportInterval(defaultConfig.getReportInterval());
             }
 
@@ -91,30 +91,30 @@ public class ExtensionConfiguration {
     }
 
     public @NotNull List<String> getEnabledMetrics() {
-        if (this.enabledMetrics.isEmpty()) {
+        if (enabledMetrics.isEmpty()) {
             final Lock writeLock = lock.writeLock();
+            writeLock.lock();
             try {
-                writeLock.lock();
-                this.enabledMetrics = readEnabledMetrics();
+                enabledMetrics = readEnabledMetrics();
                 LOG.debug("Enabled metrics loaded.");
             } finally {
                 writeLock.unlock();
             }
         }
-        return this.enabledMetrics;
+        return Collections.unmodifiableList(enabledMetrics);
     }
 
     private @NotNull List<String> readEnabledMetrics() {
-        final Lock readLock = this.lock.readLock();
+        final Lock readLock = lock.readLock();
+        readLock.lock();
         try {
-            readLock.lock();
             final List<String> newMetrics = new ArrayList<>();
 
-            if (this.config.getMetrics() == null || this.config.getMetrics().isEmpty()) {
+            if (config.getMetrics() == null || config.getMetrics().isEmpty()) {
                 LOG.error("Could not find any enabled HiveMQ metrics in configuration, no metrics were reported. ");
-                return Collections.emptyList();
+                return List.of();
             }
-            for (final Metric metric : this.config.getMetrics()) {
+            for (final Metric metric : config.getMetrics()) {
                 if (metric.isEnabled() && !metric.getValue().isEmpty()) {
                     newMetrics.add(metric.getValue());
                     LOG.trace("Added HiveMQ metric {} ", metric.getValue());
