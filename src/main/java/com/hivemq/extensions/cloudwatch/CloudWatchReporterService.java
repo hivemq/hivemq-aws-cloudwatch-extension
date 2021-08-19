@@ -41,7 +41,7 @@ import java.util.concurrent.TimeUnit;
  */
 class CloudWatchReporterService {
 
-    private static final @NotNull Logger LOG = LoggerFactory.getLogger(CloudWatchReporterService.class);
+    private static final @NotNull Logger log = LoggerFactory.getLogger(CloudWatchReporterService.class);
 
     private static final @NotNull String METRIC_NAMESPACE = "hivemq-metrics";
 
@@ -59,7 +59,7 @@ class CloudWatchReporterService {
         final Config cloudWatchConfig = configuration.getConfig();
 
         if (configuration.getEnabledMetrics().isEmpty()) {
-            LOG.warn("No HiveMQ metrics enabled, no CloudWatch report started");
+            log.warn("No HiveMQ metrics enabled, no CloudWatch report started");
         } else {
             final Duration apiTimeout = cloudWatchConfig.getApiTimeout().map(Duration::ofMillis).orElse(null);
 
@@ -78,14 +78,14 @@ class CloudWatchReporterService {
                     .filter(new ConfiguredMetricsFilter(configuration.getEnabledMetrics()))
                     .build();
             cloudWatchReporter.start(cloudWatchConfig.getReportInterval(), TimeUnit.MINUTES);
-            LOG.info("Started CloudWatchReporter for {} HiveMQ metrics", configuration.getEnabledMetrics().size());
+            log.info("Started CloudWatchReporter for {} HiveMQ metrics", configuration.getEnabledMetrics().size());
         }
     }
 
     void stopCloudWatchReporter() {
         if (cloudWatchReporter != null) {
             cloudWatchReporter.stop();
-            LOG.info("Stopped CloudWatchReporter");
+            log.info("Stopped CloudWatchReporter");
         }
     }
 

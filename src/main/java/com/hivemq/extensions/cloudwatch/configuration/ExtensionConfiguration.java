@@ -35,7 +35,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  */
 public class ExtensionConfiguration {
 
-    private static final @NotNull Logger LOG = LoggerFactory.getLogger(ExtensionConfiguration.class);
+    private static final @NotNull Logger log = LoggerFactory.getLogger(ExtensionConfiguration.class);
 
     private static final @NotNull String EXTENSION_CONFIG_FILE_NAME = "extension-config.xml";
 
@@ -64,7 +64,7 @@ public class ExtensionConfiguration {
         if (file.exists() && file.canRead() && file.length() > 0) {
             return doRead(file, defaultConfig);
         } else {
-            LOG.warn("Unable to read CloudWatch metric extension configuration file {}, using defaults", file.getAbsolutePath());
+            log.warn("Unable to read CloudWatch metric extension configuration file {}, using defaults", file.getAbsolutePath());
             return defaultConfig;
         }
     }
@@ -73,19 +73,19 @@ public class ExtensionConfiguration {
         try {
             final Config newConfig = configurationXmlParser.unmarshalExtensionConfig(file);
             if (newConfig.getApiTimeout().isPresent() && newConfig.getApiTimeout().get() < 1) {
-                LOG.warn("Connection timeout must be greater than 0, using default timeout");
+                log.warn("Connection timeout must be greater than 0, using default timeout");
                 newConfig.setApiTimeout(defaultConfig.getApiTimeout().orElse(null));
             }
 
             if (newConfig.getReportInterval() < 1) {
-                LOG.warn("Report interval must be greater than 0, using default interval {}", defaultConfig.getReportInterval());
+                log.warn("Report interval must be greater than 0, using default interval {}", defaultConfig.getReportInterval());
                 newConfig.setReportInterval(defaultConfig.getReportInterval());
             }
 
             return newConfig;
 
         } catch (final IOException e) {
-            LOG.warn("Could not read extension configuration file, reason: {}, using defaults {} ", e.getMessage(), defaultConfig);
+            log.warn("Could not read extension configuration file, reason: {}, using defaults {} ", e.getMessage(), defaultConfig);
             return defaultConfig;
         }
     }
@@ -96,7 +96,7 @@ public class ExtensionConfiguration {
             writeLock.lock();
             try {
                 enabledMetrics = readEnabledMetrics();
-                LOG.debug("Enabled metrics loaded.");
+                log.debug("Enabled metrics loaded.");
             } finally {
                 writeLock.unlock();
             }
@@ -111,13 +111,13 @@ public class ExtensionConfiguration {
             final List<String> newMetrics = new ArrayList<>();
 
             if (config.getMetrics() == null || config.getMetrics().isEmpty()) {
-                LOG.error("Could not find any enabled HiveMQ metrics in configuration, no metrics were reported. ");
+                log.error("Could not find any enabled HiveMQ metrics in configuration, no metrics were reported. ");
                 return List.of();
             }
             for (final Metric metric : config.getMetrics()) {
                 if (metric.isEnabled() && !metric.getValue().isEmpty()) {
                     newMetrics.add(metric.getValue());
-                    LOG.trace("Added HiveMQ metric {} ", metric.getValue());
+                    log.trace("Added HiveMQ metric {} ", metric.getValue());
                 }
             }
             return List.copyOf(newMetrics);

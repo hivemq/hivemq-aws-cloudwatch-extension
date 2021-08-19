@@ -39,7 +39,7 @@ import java.io.File;
  */
 public class CloudWatchMain implements ExtensionMain {
 
-    private static final @NotNull Logger LOG = LoggerFactory.getLogger(CloudWatchMain.class);
+    private static final @NotNull Logger log = LoggerFactory.getLogger(CloudWatchMain.class);
 
     private final @NotNull ManagedExtensionExecutorService service = Services.extensionExecutorService();
     private final @NotNull MetricRegistry metricRegistry = Services.metricRegistry();
@@ -54,10 +54,10 @@ public class CloudWatchMain implements ExtensionMain {
             final File extensionHomeFolder = extensionStartInput.getExtensionInformation().getExtensionHomeFolder();
             final ExtensionConfiguration extensionConfiguration = new ExtensionConfiguration(extensionHomeFolder);
             reporterService.startCloudWatchReporter(extensionConfiguration, service, metricRegistry);
-            LOG.info("Start {}", extensionStartInput.getExtensionInformation().getName());
+            log.info("Start {}", extensionStartInput.getExtensionInformation().getName());
         } catch (final Exception e) {
             extensionStartOutput.preventExtensionStartup("Extension cannot be started due to errors. ");
-            LOG.error("Exception for {} thrown at start: ", extensionStartInput.getExtensionInformation().getName(), e);
+            log.error("Exception for {} thrown at start: ", extensionStartInput.getExtensionInformation().getName(), e);
         }
     }
 
@@ -67,6 +67,6 @@ public class CloudWatchMain implements ExtensionMain {
             final @NotNull ExtensionStopOutput extensionStopOutput) {
 
         reporterService.stopCloudWatchReporter();
-        LOG.info("Stop {}", extensionStopInput.getExtensionInformation().getName());
+        log.info("Stop {}", extensionStopInput.getExtensionInformation().getName());
     }
 }
