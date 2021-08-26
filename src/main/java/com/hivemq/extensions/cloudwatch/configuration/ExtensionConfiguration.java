@@ -64,7 +64,7 @@ public class ExtensionConfiguration {
         if (file.exists() && file.canRead() && file.length() > 0) {
             return doRead(file, defaultConfig);
         } else {
-            log.warn("Unable to read CloudWatch metric extension configuration file {}, using defaults", file.getAbsolutePath());
+            log.warn("Unable to read AWS CloudWatch metric extension configuration file {}, using defaults", file.getAbsolutePath());
             return defaultConfig;
         }
     }

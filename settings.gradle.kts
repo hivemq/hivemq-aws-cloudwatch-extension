@@ -1,4 +1,4 @@
-rootProject.name = "hivemq-cloudwatch-extension"
+rootProject.name = "hivemq-aws-cloudwatch-extension"
 
 pluginManagement {
     plugins {

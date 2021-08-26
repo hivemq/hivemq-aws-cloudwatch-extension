@@ -43,7 +43,7 @@ class ConfigurationXmlParser {
         try {
             jaxb = JAXBContext.newInstance(Config.class, Metric.class);
         } catch (final JAXBException e) {
-            log.error("Error in the CloudWatch Extension. Could not initialize XML parser", e);
+            log.error("Error in the AWS CloudWatch Extension. Could not initialize XML parser", e);
             throw new RuntimeException("Initialize XML parser Error", e);
         }
     }
@@ -53,7 +53,7 @@ class ConfigurationXmlParser {
             final Unmarshaller unmarshaller = jaxb.createUnmarshaller();
             return (Config) unmarshaller.unmarshal(file);
         } catch (final JAXBException e) {
-            log.error("Error in the CloudWatch Extension. Could not unmarshal XML configuration", e);
+            log.error("Error in the AWS CloudWatch Extension. Could not unmarshal XML configuration", e);
             throw new IOException("Could not unmarshal XML configuration Error", e);
         }
     }

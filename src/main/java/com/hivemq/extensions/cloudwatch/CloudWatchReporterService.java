@@ -59,7 +59,7 @@ class CloudWatchReporterService {
         final Config cloudWatchConfig = configuration.getConfig();
 
         if (configuration.getEnabledMetrics().isEmpty()) {
-            log.warn("No HiveMQ metrics enabled, no CloudWatch report started");
+            log.warn("No HiveMQ metrics enabled, no AWS CloudWatch report started");
         } else {
             final Duration apiTimeout = cloudWatchConfig.getApiTimeout().map(Duration::ofMillis).orElse(null);
 
