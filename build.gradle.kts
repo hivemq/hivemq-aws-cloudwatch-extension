@@ -7,10 +7,10 @@ plugins {
 /* ******************** metadata ******************** */
 
 group = "com.hivemq.extensions"
-description = "HiveMQ Cloudwatch Extension"
+description = "HiveMQ CloudWatch Extension"
 
 hivemqExtension {
-    name.set("Cloudwatch Extension")
+    name.set("CloudWatch Extension")
     author.set("HiveMQ")
     priority.set(1000)
     startPriority.set(1000)
