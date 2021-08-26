@@ -69,10 +69,10 @@ The extension needs permission to be able to publish metrics to AWS CloudWatch. 
 
 == Contributing
 
-If you want to contribute to HiveMQ CloudWatch Extension, see the link:CONTRIBUTING.md[contribution guidelines].
+If you want to contribute to HiveMQ AWS CloudWatch Extension, see the link:CONTRIBUTING.md[contribution guidelines].
 
 == License
 
-HiveMQ CloudWatch Extension is licensed under the `APACHE LICENSE, VERSION 2.0`. A copy of the license can be found link:LICENSE[here].
+HiveMQ AWS CloudWatch Extension is licensed under the `APACHE LICENSE, VERSION 2.0`. A copy of the license can be found link:LICENSE[here].
 
 
