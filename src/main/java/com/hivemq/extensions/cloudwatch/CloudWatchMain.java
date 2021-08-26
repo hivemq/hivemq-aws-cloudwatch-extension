@@ -31,7 +31,7 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 
 /**
- * Main class for HiveMQ CloudWatch extension
+ * Main class for HiveMQ AWS CloudWatch extension
  * <p>
  * After HiveMQ is started, the configured HiveMQ metrics will be exposed to Amazon AWS - CloudWatch
  *
