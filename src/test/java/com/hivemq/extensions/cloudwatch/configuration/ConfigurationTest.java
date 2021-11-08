@@ -21,135 +21,113 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
-import javax.security.sasl.SaslException;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
+import java.util.Optional;
 
 import static com.hivemq.extensions.cloudwatch.configuration.entities.Config.DEF_REPORT_INTERVAL;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ConfigurationTest {
+class ConfigurationTest {
 
-    private static final @NotNull String extensionContent =
-            "<cloudwatch-extension-configuration>\n" +
-                    "    <report-interval>10</report-interval>\n" +
-                    "    <api-timeout>100</api-timeout>\n" +
-                    "    <metrics>\n" +
-                    "        <metric>com.hivemq.messages.incoming.total.count</metric>\n" +
-                    "        <metric>com.hivemq.messages.outgoing.total.count</metric>\n" +
-                    "        <metric enabled=\"false\">com.hivemq.messages.incoming.total.rate</metric>\n" +
-                    "    </metrics>\n" +
-                    "</cloudwatch-extension-configuration>";
-    private @NotNull File root;
-    private @NotNull File file;
+    private @NotNull File extensionDir;
+    private @NotNull Path configFile;
 
     @BeforeEach
-    public void setUp(final @NotNull @TempDir Path tempDir) throws Exception {
-        root = tempDir.toFile();
-        String fileName = "extension-config.xml";
-        file = tempDir.resolve(fileName).toFile();
-        file.createNewFile();
+    void setUp(final @NotNull @TempDir Path tempDir) {
+        extensionDir = tempDir.toFile();
+        configFile = tempDir.resolve("extension-config.xml");
     }
 
     @Test
-    public void defaultConfiguration_ok() {
-        final ExtensionConfiguration extensionConfiguration = new ExtensionConfiguration(root);
+    void defaultConfiguration_ok() throws IOException {
+        assertTrue(configFile.toFile().createNewFile());
+
+        final ExtensionConfiguration extensionConfiguration = new ExtensionConfiguration(extensionDir);
         final Config config = extensionConfiguration.getConfig();
         final Config defaultConfig = new Config();
 
-        assertEquals(config.getApiTimeout(), defaultConfig.getApiTimeout());
-        assertEquals(config.getReportInterval(), defaultConfig.getReportInterval());
-        assertEquals(config.getMetrics().size(), 0);
+        assertEquals(defaultConfig.getApiTimeout(), config.getApiTimeout());
+        assertEquals(defaultConfig.getReportInterval(), config.getReportInterval());
+        assertEquals(defaultConfig.getMetrics(), config.getMetrics());
     }
 
     @Test
-    public void loadConfiguration_ok() throws IOException {
-        Files.writeString(file.toPath(), extensionContent);
-        final ExtensionConfiguration extensionConfiguration = new ExtensionConfiguration(root);
+    void loadConfiguration_ok() throws IOException {
+        Files.writeString(configFile, "<cloudwatch-extension-configuration>\n" +
+                "    <report-interval>10</report-interval>\n" +
+                "    <api-timeout>100</api-timeout>\n" +
+                "    <metrics>\n" +
+                "        <metric>com.hivemq.messages.incoming.total.count</metric>\n" +
+                "        <metric>com.hivemq.messages.outgoing.total.count</metric>\n" +
+                "        <metric enabled=\"false\">com.hivemq.messages.incoming.total.rate</metric>\n" +
+                "    </metrics>\n" +
+                "</cloudwatch-extension-configuration>");
+
+        final ExtensionConfiguration extensionConfiguration = new ExtensionConfiguration(extensionDir);
         final Config config = extensionConfiguration.getConfig();
 
         assertEquals(config.getReportInterval(), 10);
-        assertTrue(config.getApiTimeout().isPresent());
-        assertEquals(config.getApiTimeout().get(), 100);
-        assertEquals(config.getMetrics().size(), 3);
-        assertEquals(extensionConfiguration.getEnabledMetrics().size(), 2);
-    }
-
-
-    @Test
-    public void intervalConfigurationOK() throws IOException {
-        final String intervalConfig =
-                "<cloudwatch-extension-configuration>\n" +
-                        "    <report-interval>30</report-interval>\n" +
-                        "</cloudwatch-extension-configuration>";
-
-        try {
-            Files.writeString(file.toPath(), intervalConfig);
-        } catch (final SaslException e) {
-            // expected
-        }
-        final Config config = new ExtensionConfiguration(root).getConfig();
-        assertEquals(config.getReportInterval(), 30);
-        assertTrue(config.getApiTimeout().isEmpty());
-        assertEquals(config.getMetrics().size(), 0);
+        assertEquals(Optional.of(100), config.getApiTimeout());
+        assertEquals(3, config.getMetrics().size());
+        assertEquals(
+                List.of("com.hivemq.messages.incoming.total.count", "com.hivemq.messages.outgoing.total.count"),
+                extensionConfiguration.getEnabledMetrics());
     }
 
     @Test
-    public void intervalConfigurationNOK() throws IOException {
-        final String intervalConfig =
-                "<cloudwatch-extension-configuration>\n" +
-                        "    <report-interval>0</report-interval>\n" +
-                        "</cloudwatch-extension-configuration>";
+    void intervalConfigurationOK() throws IOException {
+        Files.writeString(configFile, "<cloudwatch-extension-configuration>\n" +
+                "    <report-interval>30</report-interval>\n" +
+                "</cloudwatch-extension-configuration>");
 
-        try {
-            Files.writeString(file.toPath(), intervalConfig);
-        } catch (final SaslException e) {
-            // expected
-        }
-        final Config config = new ExtensionConfiguration(root).getConfig();
-        assertEquals(config.getReportInterval(), DEF_REPORT_INTERVAL);
-        assertTrue(config.getApiTimeout().isEmpty());
-        assertEquals(config.getMetrics().size(), 0);
-    }
+        final Config config = new ExtensionConfiguration(extensionDir).getConfig();
 
-
-    @Test
-    public void timeoutConfigurationOK() throws IOException {
-        final String intervalConfig =
-                "<cloudwatch-extension-configuration>\n" +
-                        "    <api-timeout>30</api-timeout>\n" +
-                        "</cloudwatch-extension-configuration>";
-
-        try {
-            Files.writeString(file.toPath(), intervalConfig);
-        } catch (final SaslException e) {
-            // expected
-        }
-        final Config config = new ExtensionConfiguration(root).getConfig();
-        assertEquals(config.getReportInterval(), DEF_REPORT_INTERVAL);
-        assertTrue(config.getApiTimeout().isPresent());
-        assertEquals(config.getApiTimeout().get(), 30);
-        assertEquals(config.getMetrics().size(), 0);
+        assertEquals(30, config.getReportInterval());
+        assertEquals(Optional.empty(), config.getApiTimeout());
+        assertEquals(List.of(), config.getMetrics());
     }
 
     @Test
-    public void timeoutConfigurationNOK() throws IOException {
-        final String intervalConfig =
-                "<cloudwatch-extension-configuration>\n" +
-                        "    <api-timeout>0</api-timeout>\n" +
-                        "</cloudwatch-extension-configuration>";
+    void intervalConfigurationNOK() throws IOException {
+        Files.writeString(configFile, "<cloudwatch-extension-configuration>\n" +
+                "    <report-interval>0</report-interval>\n" +
+                "</cloudwatch-extension-configuration>");
 
-        try {
-            Files.writeString(file.toPath(), intervalConfig);
-        } catch (final SaslException e) {
-            // expected
-        }
-        final Config config = new ExtensionConfiguration(root).getConfig();
-        assertEquals(config.getReportInterval(), DEF_REPORT_INTERVAL);
-        assertTrue(config.getApiTimeout().isEmpty());
-        assertEquals(config.getMetrics().size(), 0);
+        final Config config = new ExtensionConfiguration(extensionDir).getConfig();
+
+        assertEquals(DEF_REPORT_INTERVAL, config.getReportInterval());
+        assertEquals(Optional.empty(), config.getApiTimeout());
+        assertEquals(List.of(), config.getMetrics());
+    }
+
+    @Test
+    void timeoutConfigurationOK() throws IOException {
+        Files.writeString(configFile, "<cloudwatch-extension-configuration>\n" +
+                "    <api-timeout>30</api-timeout>\n" +
+                "</cloudwatch-extension-configuration>");
+
+        final Config config = new ExtensionConfiguration(extensionDir).getConfig();
+
+        assertEquals(DEF_REPORT_INTERVAL, config.getReportInterval());
+        assertEquals(Optional.of(30), config.getApiTimeout());
+        assertEquals(List.of(), config.getMetrics());
+    }
+
+    @Test
+    void timeoutConfigurationNOK() throws IOException {
+        Files.writeString(configFile, "<cloudwatch-extension-configuration>\n" +
+                "    <api-timeout>0</api-timeout>\n" +
+                "</cloudwatch-extension-configuration>");
+
+        final Config config = new ExtensionConfiguration(extensionDir).getConfig();
+
+        assertEquals(DEF_REPORT_INTERVAL, config.getReportInterval());
+        assertEquals(Optional.empty(), config.getApiTimeout());
+        assertEquals(List.of(), config.getMetrics());
     }
 }

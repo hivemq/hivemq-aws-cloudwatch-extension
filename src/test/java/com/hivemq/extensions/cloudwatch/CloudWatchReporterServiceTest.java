@@ -24,7 +24,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -32,47 +31,42 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class CloudWatchReporterServiceTest {
+class CloudWatchReporterServiceTest {
 
     private final @NotNull CloudWatchReporterService reporterService = new CloudWatchReporterService();
-
     private @NotNull ExtensionConfiguration extensionConfiguration;
-    private @NotNull ManagedExtensionExecutorService service;
+    private @NotNull ManagedExtensionExecutorService extensionExecutorService;
     private @NotNull MetricRegistry metricRegistry;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         extensionConfiguration = mock(ExtensionConfiguration.class);
-        service = mock(ManagedExtensionExecutorService.class);
+        extensionExecutorService = mock(ManagedExtensionExecutorService.class);
         metricRegistry = mock(MetricRegistry.class);
 
-        System.setProperty("aws.region", "us-east-1");
-
-        final List<String> metrics = new ArrayList<>();
         final Config config = new Config();
-
-        metrics.add("metric1");
-        metrics.add("metric2");
         when(extensionConfiguration.getConfig()).thenReturn(config);
-        when(extensionConfiguration.getEnabledMetrics()).thenReturn(metrics);
+
+        System.setProperty("aws.region", "us-east-1");
+    }
+
+    @AfterEach
+    void tearDown() {
+        System.clearProperty("aws.region");
     }
 
     @Test
-    public void testStartCloudWatchReporter() {
-        reporterService.startCloudWatchReporter(extensionConfiguration, service, metricRegistry);
+    void startCloudWatchReporter_whenConfiguredMetrics_thenStarted() {
+        when(extensionConfiguration.getEnabledMetrics()).thenReturn(List.of("metric1", "metric2"));
+        reporterService.startCloudWatchReporter(extensionConfiguration, extensionExecutorService, metricRegistry);
         assertNotNull(reporterService.getCloudWatchReporter(), "CloudWatchReporter is started");
         reporterService.stopCloudWatchReporter();
     }
 
     @Test
-    public void testStartCloudWatchReporterNotWhenEmptyMetrics() {
-        when(extensionConfiguration.getEnabledMetrics()).thenReturn(new ArrayList<>());
-        reporterService.startCloudWatchReporter(extensionConfiguration, service, metricRegistry);
+    void startCloudWatchReporter_whenEmptyMetrics_thenNotStarted() {
+        when(extensionConfiguration.getEnabledMetrics()).thenReturn(List.of());
+        reporterService.startCloudWatchReporter(extensionConfiguration, extensionExecutorService, metricRegistry);
         assertNull(reporterService.getCloudWatchReporter(), "CloudWatchReporter not started");
-    }
-
-    @AfterEach
-    public void cleanUp() {
-        System.clearProperty("aws.region");
     }
 }

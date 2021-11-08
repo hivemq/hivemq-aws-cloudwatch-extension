@@ -40,12 +40,11 @@ public class Config {
     @XmlElement(name = "api-timeout")
     private @Nullable Integer apiTimeout = DEF_API_TIMEOUT;
 
-    @SuppressWarnings("FieldMayBeFinal")
     @XmlElementWrapper(name = "metrics")
     @XmlElement(name = "metric")
-    private @Nullable List<Metric> metrics = new ArrayList<>();
+    private final @NotNull List<Metric> metrics = new ArrayList<>();
 
-    public final @Nullable List<Metric> getMetrics() {
+    public final @NotNull List<Metric> getMetrics() {
         return metrics;
     }
 
