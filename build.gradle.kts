@@ -4,8 +4,6 @@ plugins {
     id("com.github.sgtsilvio.gradle.utf8")
 }
 
-/* ******************** metadata ******************** */
-
 group = "com.hivemq.extensions"
 description = "HiveMQ AWS CloudWatch Extension"
 
@@ -20,12 +18,6 @@ hivemqExtension {
     resources {
         from("LICENSE")
     }
-}
-
-/* ******************** dependencies ******************** */
-
-repositories {
-    mavenCentral()
 }
 
 dependencies {
