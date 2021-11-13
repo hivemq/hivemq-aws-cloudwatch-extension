@@ -1,19 +1,22 @@
 = HiveMQ AWS CloudWatch Extension
 
+image:https://img.shields.io/badge/Extension_Type-Monitoring-orange?style=for-the-badge[Extension Type]
+image:https://img.shields.io/github/v/release/hivemq/hivemq-aws-cloudwatch-extension?style=for-the-badge[GitHub release (latest by date),link=https://github.com/hivemq/hivemq-aws-cloudwatch-extension/releases/latest]
+image:https://img.shields.io/github/license/hivemq/hivemq-aws-cloudwatch-extension?style=for-the-badge&color=brightgreen[GitHub,link=LICENSE]
+image:https://img.shields.io/github/workflow/status/hivemq/hivemq-aws-cloudwatch-extension/CI%20Check/master?style=for-the-badge[GitHub Workflow Status (branch),link=https://github.com/hivemq/hivemq-aws-cloudwatch-extension/actions/workflows/check.yml?query=branch%3Amaster]
 
 == Purpose
 
 This HiveMQ Extension allows HiveMQ to report its metrics to AWS CloudWatch.
 
-It is possible to send every HiveMQ metric to CloudWatch. Every metric which should be reported
-must be configured explicitly to reduce the costs, since CloudWatch can be expensive if you
-publish too much (unnecessary) data.
-
+It is possible to send every HiveMQ metric to CloudWatch.
+Every metric which should be reported must be configured explicitly to reduce the costs, since CloudWatch can be expensive if you publish too much (unnecessary) data.
 
 [CAUTION]
 .AWS CloudWatch costs
 ====
-AWS CloudWatch metrics can be *very* expensive. So please make sure you really want to report the specified metrics.
+AWS CloudWatch metrics can be *very* expensive.
+So please make sure you really want to report the specified metrics.
 You can find the full AWS pricing https://aws.amazon.com/cloudwatch/pricing/[here].
 
 At the time of writing the AWS prices are the following:
@@ -29,7 +32,6 @@ At the time of writing the AWS prices are the following:
 * Copy the content of the zip file to the `extensions` folder of your HiveMQ nodes.
 * Modify the `extension-config.xml` file for your needs.
 
-
 == Extension Configuration
 
 The CloudWatch extension uses its own configuration file 'extension-config.xml'.
@@ -42,7 +44,7 @@ The following properties are available:
 | Property | Description
 
 | report-interval | A value in minutes which sets the reporting interval (defaults to 1 minute)
-| api-timeout | The api call and api attempt timeout in ms. (If not set defaults to AWS SDK default)
+| api-timeout | The api call and api attempt timeout in ms (if not set defaults to AWS SDK default)
 | metric enabled="{true/false}" | a metric name (from a list of metrics) which should be reported to CloudWatch
 |===
 
@@ -59,13 +61,13 @@ The following properties are available:
     </metrics>
 </cloudwatch-extension-configuration>
 ----
-A list of all available metrics can be found on the HiveMQ Documentation
-here at https://www.hivemq.com/docs/hivemq/4.6/user-guide/monitoring.html#metrics[HiveMQ Metrics]
+
+A list of all available metrics can be found on the HiveMQ Documentation here at https://www.hivemq.com/docs/hivemq/4.6/user-guide/monitoring.html#metrics[HiveMQ Metrics]
 
 == CloudWatch configuration
 
-The extension needs permission to be able to publish metrics to AWS CloudWatch. Simply create an AWS *IAM Role* with a custom *Policy* that grants the *CloudWatch:PutMetricData Permission* and apply it to the HiveMQ instance.
-
+The extension needs permission to be able to publish metrics to AWS CloudWatch.
+Simply create an AWS *IAM Role* with a custom *Policy* that grants the *CloudWatch:PutMetricData Permission* and apply it to the HiveMQ instance.
 
 == Contributing
 
@@ -73,6 +75,5 @@ If you want to contribute to HiveMQ AWS CloudWatch Extension, see the link:CONTR
 
 == License
 
-HiveMQ AWS CloudWatch Extension is licensed under the `APACHE LICENSE, VERSION 2.0`. A copy of the license can be found link:LICENSE[here].
-
-
+HiveMQ AWS CloudWatch Extension is licensed under the `APACHE LICENSE, VERSION 2.0`.
+A copy of the license can be found link:LICENSE[here].
