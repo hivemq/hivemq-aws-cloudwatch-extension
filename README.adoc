@@ -1,3 +1,5 @@
+:hivemq-extension-downloads: https://www.hivemq.com/extension/aws-cloudwatch-extension/
+
 = HiveMQ AWS CloudWatch Extension
 
 image:https://img.shields.io/badge/Extension_Type-Monitoring-orange?style=for-the-badge[Extension Type]
@@ -28,7 +30,7 @@ At the time of writing the AWS prices are the following:
 
 === Installation
 
-* Download the extension from the {{< targetlink "GitHub Releases Page" "https://github.com/hivemq/hivemq-cloudwatch-extension"  "_blank" >}}.
+* Download the extension from the {hivemq-extension-downloads}[HiveMQ Marketplace^].
 * Copy the content of the zip file to the `extensions` folder of your HiveMQ nodes.
 * Modify the `extension-config.xml` file for your needs.
 
