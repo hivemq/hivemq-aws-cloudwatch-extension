@@ -64,7 +64,8 @@ public class ExtensionConfiguration {
         if (file.exists() && file.canRead() && file.length() > 0) {
             return doRead(file, defaultConfig);
         } else {
-            log.warn("Unable to read AWS CloudWatch metric extension configuration file {}, using defaults", file.getAbsolutePath());
+            log.warn("Unable to read AWS CloudWatch metric extension configuration file {}, using defaults",
+                    file.getAbsolutePath());
             return defaultConfig;
         }
     }
@@ -78,14 +79,17 @@ public class ExtensionConfiguration {
             }
 
             if (newConfig.getReportInterval() < 1) {
-                log.warn("Report interval must be greater than 0, using default interval {}", defaultConfig.getReportInterval());
+                log.warn("Report interval must be greater than 0, using default interval {}",
+                        defaultConfig.getReportInterval());
                 newConfig.setReportInterval(defaultConfig.getReportInterval());
             }
 
             return newConfig;
 
         } catch (final IOException e) {
-            log.warn("Could not read extension configuration file, reason: {}, using defaults {} ", e.getMessage(), defaultConfig);
+            log.warn("Could not read extension configuration file, reason: {}, using defaults {} ",
+                    e.getMessage(),
+                    defaultConfig);
             return defaultConfig;
         }
     }

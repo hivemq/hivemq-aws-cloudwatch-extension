@@ -58,15 +58,16 @@ class ConfigurationTest {
 
     @Test
     void loadConfiguration_ok() throws IOException {
-        Files.writeString(configFile, "<cloudwatch-extension-configuration>\n" +
-                "    <report-interval>10</report-interval>\n" +
-                "    <api-timeout>100</api-timeout>\n" +
-                "    <metrics>\n" +
-                "        <metric>com.hivemq.messages.incoming.total.count</metric>\n" +
-                "        <metric>com.hivemq.messages.outgoing.total.count</metric>\n" +
-                "        <metric enabled=\"false\">com.hivemq.messages.incoming.total.rate</metric>\n" +
-                "    </metrics>\n" +
-                "</cloudwatch-extension-configuration>");
+        Files.writeString(configFile,
+                "<cloudwatch-extension-configuration>\n" +
+                        "    <report-interval>10</report-interval>\n" +
+                        "    <api-timeout>100</api-timeout>\n" +
+                        "    <metrics>\n" +
+                        "        <metric>com.hivemq.messages.incoming.total.count</metric>\n" +
+                        "        <metric>com.hivemq.messages.outgoing.total.count</metric>\n" +
+                        "        <metric enabled=\"false\">com.hivemq.messages.incoming.total.rate</metric>\n" +
+                        "    </metrics>\n" +
+                        "</cloudwatch-extension-configuration>");
 
         final ExtensionConfiguration extensionConfiguration = new ExtensionConfiguration(extensionDir);
         final Config config = extensionConfiguration.getConfig();
@@ -74,16 +75,16 @@ class ConfigurationTest {
         assertEquals(config.getReportInterval(), 10);
         assertEquals(Optional.of(100), config.getApiTimeout());
         assertEquals(3, config.getMetrics().size());
-        assertEquals(
-                List.of("com.hivemq.messages.incoming.total.count", "com.hivemq.messages.outgoing.total.count"),
+        assertEquals(List.of("com.hivemq.messages.incoming.total.count", "com.hivemq.messages.outgoing.total.count"),
                 extensionConfiguration.getEnabledMetrics());
     }
 
     @Test
     void intervalConfigurationOK() throws IOException {
-        Files.writeString(configFile, "<cloudwatch-extension-configuration>\n" +
-                "    <report-interval>30</report-interval>\n" +
-                "</cloudwatch-extension-configuration>");
+        Files.writeString(configFile,
+                "<cloudwatch-extension-configuration>\n" +
+                        "    <report-interval>30</report-interval>\n" +
+                        "</cloudwatch-extension-configuration>");
 
         final Config config = new ExtensionConfiguration(extensionDir).getConfig();
 
@@ -94,9 +95,10 @@ class ConfigurationTest {
 
     @Test
     void intervalConfigurationNOK() throws IOException {
-        Files.writeString(configFile, "<cloudwatch-extension-configuration>\n" +
-                "    <report-interval>0</report-interval>\n" +
-                "</cloudwatch-extension-configuration>");
+        Files.writeString(configFile,
+                "<cloudwatch-extension-configuration>\n" +
+                        "    <report-interval>0</report-interval>\n" +
+                        "</cloudwatch-extension-configuration>");
 
         final Config config = new ExtensionConfiguration(extensionDir).getConfig();
 
@@ -107,9 +109,10 @@ class ConfigurationTest {
 
     @Test
     void timeoutConfigurationOK() throws IOException {
-        Files.writeString(configFile, "<cloudwatch-extension-configuration>\n" +
-                "    <api-timeout>30</api-timeout>\n" +
-                "</cloudwatch-extension-configuration>");
+        Files.writeString(configFile,
+                "<cloudwatch-extension-configuration>\n" +
+                        "    <api-timeout>30</api-timeout>\n" +
+                        "</cloudwatch-extension-configuration>");
 
         final Config config = new ExtensionConfiguration(extensionDir).getConfig();
 
@@ -120,9 +123,10 @@ class ConfigurationTest {
 
     @Test
     void timeoutConfigurationNOK() throws IOException {
-        Files.writeString(configFile, "<cloudwatch-extension-configuration>\n" +
-                "    <api-timeout>0</api-timeout>\n" +
-                "</cloudwatch-extension-configuration>");
+        Files.writeString(configFile,
+                "<cloudwatch-extension-configuration>\n" +
+                        "    <api-timeout>0</api-timeout>\n" +
+                        "</cloudwatch-extension-configuration>");
 
         final Config config = new ExtensionConfiguration(extensionDir).getConfig();
 

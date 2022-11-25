@@ -18,7 +18,12 @@ package com.hivemq.extensions.cloudwatch.configuration.entities;
 import com.hivemq.extension.sdk.api.annotations.NotNull;
 import com.hivemq.extension.sdk.api.annotations.Nullable;
 
-import javax.xml.bind.annotation.*;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -67,9 +72,12 @@ public class Config {
     @Override
     public final @NotNull String toString() {
         return "Config{" +
-                "reportInterval=" + reportInterval +
-                ", apiTimeout=" + apiTimeout +
-                ", metrics=" + metrics +
+                "reportInterval=" +
+                reportInterval +
+                ", apiTimeout=" +
+                apiTimeout +
+                ", metrics=" +
+                metrics +
                 '}';
     }
 }

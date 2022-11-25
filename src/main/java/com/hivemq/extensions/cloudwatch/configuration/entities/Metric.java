@@ -17,7 +17,12 @@ package com.hivemq.extensions.cloudwatch.configuration.entities;
 
 import com.hivemq.extension.sdk.api.annotations.NotNull;
 
-import javax.xml.bind.annotation.*;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.XmlValue;
 
 /**
  * @author Anja Helmbrecht-Schaar
@@ -44,9 +49,6 @@ public class Metric {
 
     @Override
     public @NotNull String toString() {
-        return "Metric{" +
-                "enabled=" + enabled +
-                ", value='" + value + '\'' +
-                '}';
+        return "Metric{" + "enabled=" + enabled + ", value='" + value + '\'' + '}';
     }
 }

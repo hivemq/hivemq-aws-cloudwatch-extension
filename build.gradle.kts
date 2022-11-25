@@ -42,6 +42,22 @@ tasks.withType<Test>().configureEach {
     useJUnitPlatform()
 }
 
+/* ******************** integration test ******************** */
+
+dependencies {
+    integrationTestImplementation("com.hivemq:hivemq-mqtt-client:${property("hivemq-mqtt-client.version")}")
+
+    integrationTestImplementation(platform("org.testcontainers:testcontainers-bom:${property("testcontainers.version")}"))
+    integrationTestImplementation("org.testcontainers:testcontainers")
+    integrationTestImplementation("org.testcontainers:junit-jupiter")
+    integrationTestImplementation("org.testcontainers:localstack")
+    integrationTestImplementation("org.testcontainers:hivemq")
+
+    //necessary as the localstack s3 service would not start without the old sdk
+    integrationTestRuntimeOnly("com.amazonaws:aws-java-sdk-s3:${property("aws-legacy-sdk.version")}")
+    integrationTestRuntimeOnly("ch.qos.logback:logback-classic:${property("logback.version")}")
+}
+
 /* ******************** checks ******************** */
 
 license {
