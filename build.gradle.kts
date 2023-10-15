@@ -29,33 +29,32 @@ dependencies {
     runtimeOnly(libs.jaxb.impl)
 }
 
-/* ******************** test ******************** */
+@Suppress("UnstableApiUsage")
+testing {
+    suites {
+        withType<JvmTestSuite> {
+            useJUnitJupiter(libs.versions.junit.jupiter)
+        }
+        "test"(JvmTestSuite::class) {
+            dependencies {
+                implementation(libs.mockito)
+            }
+        }
+        "integrationTest"(JvmTestSuite::class) {
+            dependencies {
+                implementation(libs.hivemq.mqttClient)
+                implementation(platform(libs.testcontainers.bom))
+                implementation(libs.testcontainers)
+                implementation(libs.testcontainers.junitJupiter)
+                implementation(libs.testcontainers.localstack)
+                implementation(libs.testcontainers.hivemq)
 
-dependencies {
-    testImplementation(libs.junit.jupiter.api)
-    testImplementation(libs.junit.jupiter.params)
-    testRuntimeOnly(libs.junit.jupiter.engine)
-    testImplementation(libs.mockito)
-}
-
-tasks.withType<Test>().configureEach {
-    useJUnitPlatform()
-}
-
-/* ******************** integration test ******************** */
-
-dependencies {
-    integrationTestImplementation(libs.hivemq.mqttClient)
-
-    integrationTestImplementation(platform(libs.testcontainers.bom))
-    integrationTestImplementation(libs.testcontainers)
-    integrationTestImplementation(libs.testcontainers.junitJupiter)
-    integrationTestImplementation(libs.testcontainers.localstack)
-    integrationTestImplementation(libs.testcontainers.hivemq)
-
-    //necessary as the localstack s3 service would not start without the old sdk
-    integrationTestRuntimeOnly(libs.aws.sdkv1.s3)
-    integrationTestRuntimeOnly(libs.logback.classic)
+                //necessary as the localstack s3 service would not start without the old sdk
+                runtimeOnly(libs.aws.sdkv1.s3)
+                runtimeOnly(libs.logback.classic)
+            }
+        }
+    }
 }
 
 /* ******************** checks ******************** */
