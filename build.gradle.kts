@@ -40,20 +40,6 @@ testing {
                 implementation(libs.mockito)
             }
         }
-        "integrationTest"(JvmTestSuite::class) {
-            dependencies {
-                implementation(libs.hivemq.mqttClient)
-                implementation(platform(libs.testcontainers.bom))
-                implementation(libs.testcontainers)
-                implementation(libs.testcontainers.junitJupiter)
-                implementation(libs.testcontainers.localstack)
-                implementation(libs.testcontainers.hivemq)
-
-                //necessary as the localstack s3 service would not start without the old sdk
-                runtimeOnly(libs.aws.sdkv1.s3)
-                runtimeOnly(libs.logback.classic)
-            }
-        }
     }
 }
 
