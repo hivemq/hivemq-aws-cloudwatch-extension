@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.hivemq.extensions.cloudwatch.configuration;
+package com.hivemq.extensions.aws.cloudwatch.configuration;
 
 import com.hivemq.extension.sdk.api.annotations.NotNull;
-import com.hivemq.extensions.cloudwatch.configuration.entities.Config;
+import com.hivemq.extensions.aws.cloudwatch.configuration.entities.Config;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -28,7 +28,7 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
 
-import static com.hivemq.extensions.cloudwatch.configuration.entities.Config.DEF_REPORT_INTERVAL;
+import static com.hivemq.extensions.aws.cloudwatch.configuration.entities.Config.DEF_REPORT_INTERVAL;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 

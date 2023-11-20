@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.hivemq.extensions.cloudwatch;
+package com.hivemq.extensions.aws.cloudwatch;
 
 import com.codahale.metrics.Metric;
 import com.codahale.metrics.MetricFilter;
@@ -21,8 +21,8 @@ import com.codahale.metrics.MetricRegistry;
 import com.hivemq.extension.sdk.api.annotations.NotNull;
 import com.hivemq.extension.sdk.api.annotations.Nullable;
 import com.hivemq.extension.sdk.api.services.ManagedExtensionExecutorService;
-import com.hivemq.extensions.cloudwatch.configuration.ExtensionConfiguration;
-import com.hivemq.extensions.cloudwatch.configuration.entities.Config;
+import com.hivemq.extensions.aws.cloudwatch.configuration.ExtensionConfiguration;
+import com.hivemq.extensions.aws.cloudwatch.configuration.entities.Config;
 import io.github.azagniotov.metrics.reporter.cloudwatch.CloudWatchReporter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
