@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.hivemq.extensions.cloudwatch.configuration;
+package com.hivemq.extensions.aws.cloudwatch.configuration;
 
 import com.hivemq.extension.sdk.api.annotations.NotNull;
-import com.hivemq.extensions.cloudwatch.configuration.entities.Config;
-import com.hivemq.extensions.cloudwatch.configuration.entities.Metric;
+import com.hivemq.extensions.aws.cloudwatch.configuration.entities.Config;
+import com.hivemq.extensions.aws.cloudwatch.configuration.entities.Metric;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

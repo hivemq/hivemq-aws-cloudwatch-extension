@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.hivemq.extensions.cloudwatch.configuration.entities;
+package com.hivemq.extensions.aws.cloudwatch.configuration.entities;
 
 import com.hivemq.extension.sdk.api.annotations.NotNull;
 
