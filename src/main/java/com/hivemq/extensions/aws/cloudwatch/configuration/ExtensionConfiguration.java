@@ -114,7 +114,7 @@ public class ExtensionConfiguration {
         try {
             final List<String> newMetrics = new ArrayList<>();
 
-            if (config.getMetrics() == null || config.getMetrics().isEmpty()) {
+            if (config.getMetrics().isEmpty()) {
                 log.error("Could not find any enabled HiveMQ metrics in configuration, no metrics were reported. ");
                 return List.of();
             }
