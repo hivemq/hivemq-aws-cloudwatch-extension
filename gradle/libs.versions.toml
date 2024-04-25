@@ -4,6 +4,7 @@ dropwizard-metrics-cloudwatch = "2.0.8"
 hivemq-extensionSdk = "4.6.4"
 jaxb-api = "2.3.3"
 jaxb-impl = "2.3.9"
+jetbrains-annotations = "24.1.0"
 junit-jupiter = "5.10.0"
 mockito = "5.11.0"
 
@@ -12,6 +13,7 @@ aws-sdkv2-cloudwatch = { module = "software.amazon.awssdk:cloudwatch", version.r
 dropwizard-metrics-cloudwatch = { module = "io.github.azagniotov:dropwizard-metrics-cloudwatch", version.ref = "dropwizard-metrics-cloudwatch" }
 jaxb-api = { module = "jakarta.xml.bind:jakarta.xml.bind-api", version.ref = "jaxb-api" }
 jaxb-impl = { module = "com.sun.xml.bind:jaxb-impl", version.ref = "jaxb-impl" }
+jetbrains-annotations = { module = "org.jetbrains:annotations", version.ref = "jetbrains-annotations" }
 mockito = { module = "org.mockito:mockito-core", version.ref = "mockito" }
 
 [plugins]
