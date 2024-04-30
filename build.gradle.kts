@@ -20,6 +20,8 @@ hivemqExtension {
 }
 
 dependencies {
+    compileOnly(libs.jetbrains.annotations)
+
     implementation(libs.dropwizard.metrics.cloudwatch)
     implementation(libs.aws.sdkv2.cloudwatch)
 
@@ -36,6 +38,7 @@ testing {
         }
         "test"(JvmTestSuite::class) {
             dependencies {
+                compileOnly(libs.jetbrains.annotations)
                 implementation(libs.mockito)
             }
         }

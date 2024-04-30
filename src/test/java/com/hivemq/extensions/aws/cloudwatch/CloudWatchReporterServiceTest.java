@@ -16,10 +16,10 @@
 package com.hivemq.extensions.aws.cloudwatch;
 
 import com.codahale.metrics.MetricRegistry;
-import com.hivemq.extension.sdk.api.annotations.NotNull;
 import com.hivemq.extension.sdk.api.services.ManagedExtensionExecutorService;
 import com.hivemq.extensions.aws.cloudwatch.configuration.ExtensionConfiguration;
 import com.hivemq.extensions.aws.cloudwatch.configuration.entities.Config;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

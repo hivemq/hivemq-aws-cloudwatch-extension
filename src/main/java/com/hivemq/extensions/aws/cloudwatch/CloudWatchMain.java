@@ -17,7 +17,6 @@ package com.hivemq.extensions.aws.cloudwatch;
 
 import com.codahale.metrics.MetricRegistry;
 import com.hivemq.extension.sdk.api.ExtensionMain;
-import com.hivemq.extension.sdk.api.annotations.NotNull;
 import com.hivemq.extension.sdk.api.parameter.ExtensionStartInput;
 import com.hivemq.extension.sdk.api.parameter.ExtensionStartOutput;
 import com.hivemq.extension.sdk.api.parameter.ExtensionStopInput;
@@ -25,6 +24,7 @@ import com.hivemq.extension.sdk.api.parameter.ExtensionStopOutput;
 import com.hivemq.extension.sdk.api.services.ManagedExtensionExecutorService;
 import com.hivemq.extension.sdk.api.services.Services;
 import com.hivemq.extensions.aws.cloudwatch.configuration.ExtensionConfiguration;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,6 +37,7 @@ import java.io.File;
  *
  * @author Anja Helmbrecht-Schaar
  */
+@SuppressWarnings("unused")
 public class CloudWatchMain implements ExtensionMain {
 
     private static final @NotNull Logger log = LoggerFactory.getLogger(CloudWatchMain.class);

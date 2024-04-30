@@ -15,9 +15,9 @@
  */
 package com.hivemq.extensions.aws.cloudwatch.configuration;
 
-import com.hivemq.extension.sdk.api.annotations.NotNull;
 import com.hivemq.extensions.aws.cloudwatch.configuration.entities.Config;
 import com.hivemq.extensions.aws.cloudwatch.configuration.entities.Metric;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -114,7 +114,7 @@ public class ExtensionConfiguration {
         try {
             final List<String> newMetrics = new ArrayList<>();
 
-            if (config.getMetrics() == null || config.getMetrics().isEmpty()) {
+            if (config.getMetrics().isEmpty()) {
                 log.error("Could not find any enabled HiveMQ metrics in configuration, no metrics were reported. ");
                 return List.of();
             }
