@@ -1,5 +1,5 @@
 [versions]
-aws-sdkv2 = "2.25.55"
+aws-sdkv2 = "2.25.60"
 dropwizard-metrics-cloudwatch = "2.0.8"
 hivemq-extensionSdk = "4.6.4"
 jaxb-api = "2.3.3"
