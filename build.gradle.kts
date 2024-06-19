@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.hivemq.extension)
     alias(libs.plugins.defaults)
     alias(libs.plugins.license)
+    alias(libs.plugins.kotlin)
 }
 
 group = "com.hivemq.extensions"
@@ -40,6 +41,20 @@ testing {
             dependencies {
                 compileOnly(libs.jetbrains.annotations)
                 implementation(libs.mockito)
+            }
+        }
+        "integrationTest"(JvmTestSuite::class) {
+            dependencies {
+                compileOnly(libs.jetbrains.annotations)
+                implementation(libs.awaitility)
+                implementation(libs.aws.sdkv2.cloudwatch)
+                implementation(libs.hivemq.mqttClient)
+                implementation(libs.kotlin.stdlib)
+                implementation(libs.okhttp)
+                implementation(libs.testcontainers.hivemq)
+                implementation(libs.testcontainers.junitJupiter)
+                implementation(libs.testcontainers.localstack)
+                runtimeOnly(libs.logback.classic)
             }
         }
     }

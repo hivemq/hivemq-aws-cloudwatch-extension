@@ -30,8 +30,10 @@ import software.amazon.awssdk.auth.credentials.DefaultCredentialsProvider;
 import software.amazon.awssdk.core.client.config.ClientAsyncConfiguration;
 import software.amazon.awssdk.core.client.config.ClientOverrideConfiguration;
 import software.amazon.awssdk.core.client.config.SdkAdvancedAsyncClientOption;
+import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.cloudwatch.CloudWatchAsyncClient;
 
+import java.net.URI;
 import java.time.Duration;
 import java.util.Collection;
 import java.util.concurrent.TimeUnit;
@@ -63,7 +65,16 @@ class CloudWatchReporterService {
         } else {
             final Duration apiTimeout = cloudWatchConfig.getApiTimeout().map(Duration::ofMillis).orElse(null);
 
+            final String endpointOverride = System.getenv("AWS_ENDPOINT_OVERRIDE");
+            final URI endpoint = URI.create(endpointOverride);
+            System.out.println("ENDPOINT IS " + endpoint);
+
+            final String awsRegion = System.getenv("AWS_REGION_OVERRIDE");
+            System.out.println("AWS_REGION IS " + awsRegion);
+
             final CloudWatchAsyncClient cloudWatchAsync = CloudWatchAsyncClient.builder()
+                    .endpointOverride(endpoint)
+                    .region(Region.of(awsRegion))
                     .credentialsProvider(DefaultCredentialsProvider.create())
                     .asyncConfiguration(ClientAsyncConfiguration.builder()
                             .advancedOption(SdkAdvancedAsyncClientOption.FUTURE_COMPLETION_EXECUTOR, executorService)
@@ -75,9 +86,11 @@ class CloudWatchReporterService {
                     .build();
 
             cloudWatchReporter = CloudWatchReporter.forRegistry(metricRegistry, cloudWatchAsync, METRIC_NAMESPACE)
+                    .withZeroValuesSubmission()
+                    .withReportRawCountValue()
                     .filter(new ConfiguredMetricsFilter(configuration.getEnabledMetrics()))
                     .build();
-            cloudWatchReporter.start(cloudWatchConfig.getReportInterval(), TimeUnit.MINUTES);
+            cloudWatchReporter.start(cloudWatchConfig.getReportInterval(), TimeUnit.SECONDS);
             log.info("Started CloudWatchReporter for {} HiveMQ metrics", configuration.getEnabledMetrics().size());
         }
     }
