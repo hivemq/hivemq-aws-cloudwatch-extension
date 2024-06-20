@@ -48,6 +48,8 @@ The following properties are available:
 | report-interval | A value in minutes which sets the reporting interval (defaults to 1 minute)
 | api-timeout | The api call and api attempt timeout in ms (if not set defaults to AWS SDK default)
 | metric enabled="{true/false}" | a metric name (from a list of metrics) which should be reported to CloudWatch
+| report-raw-count-value | Report the raw value of count metrics instead of reporting only the count difference since the last report, default is false.
+| zero-values-submission | POSTs all values to CloudWatch. Otherwise, the reporter does not POST values which are zero in order to save costs, default is false.
 |===
 
 .Example Configuration
