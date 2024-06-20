@@ -18,7 +18,6 @@ import software.amazon.awssdk.services.cloudwatch.model.Metric
 import software.amazon.awssdk.services.cloudwatch.model.MetricDataQuery
 import software.amazon.awssdk.services.cloudwatch.model.MetricStat
 import software.amazon.awssdk.services.cloudwatch.model.Statistic
-import java.net.URI
 import java.time.Duration
 import java.time.Instant
 import java.util.concurrent.TimeUnit
@@ -44,8 +43,7 @@ class EndToEndIT {
                 "hivemq-aws-cloudwatch-extension",
                 "extension-config.xml"
             )
-            withEnv("AWS_ENDPOINT_OVERRIDE", URI("http://localstack:4566").toString())
-            withEnv("AWS_REGION_OVERRIDE", localStack.region)
+            withEnv("AWS_REGION", localStack.region)
             withEnv("AWS_ACCESS_KEY_ID", localStack.accessKey)
             withEnv("AWS_SECRET_ACCESS_KEY", localStack.secretKey)
             withLogConsumer { println("HIVEMQ: " + it.utf8StringWithoutLineEnding) }

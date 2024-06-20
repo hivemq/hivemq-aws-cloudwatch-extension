@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <cloudwatch-extension-configuration>
+    <aws-endpoint-override>http://localstack:4566</aws-endpoint-override>
     <report-interval>1</report-interval>
     <zero-value-submission>true</zero-value-submission>
     <report-raw-count-value>true</report-raw-count-value>
