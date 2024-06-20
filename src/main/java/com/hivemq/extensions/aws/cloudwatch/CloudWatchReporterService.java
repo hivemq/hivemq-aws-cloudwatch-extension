@@ -30,8 +30,8 @@ import software.amazon.awssdk.auth.credentials.DefaultCredentialsProvider;
 import software.amazon.awssdk.core.client.config.ClientAsyncConfiguration;
 import software.amazon.awssdk.core.client.config.ClientOverrideConfiguration;
 import software.amazon.awssdk.core.client.config.SdkAdvancedAsyncClientOption;
-import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.cloudwatch.CloudWatchAsyncClient;
+import software.amazon.awssdk.services.cloudwatch.CloudWatchAsyncClientBuilder;
 
 import java.net.URI;
 import java.time.Duration;
@@ -65,25 +65,23 @@ class CloudWatchReporterService {
         } else {
             final Duration apiTimeout = cloudWatchConfig.getApiTimeout().map(Duration::ofMillis).orElse(null);
 
-            final String endpointOverride = System.getenv("AWS_ENDPOINT_OVERRIDE");
-            final URI endpoint = URI.create(endpointOverride);
-            System.out.println("ENDPOINT IS " + endpoint);
+            final CloudWatchAsyncClientBuilder cloudWatchAsyncClientBuilder = CloudWatchAsyncClient.builder();
+            if (configuration.getConfig().getAwsEndpointOverride() != null) {
+                cloudWatchAsyncClientBuilder.endpointOverride(URI.create(configuration.getConfig()
+                        .getAwsEndpointOverride()));
+            }
 
-            final String awsRegion = System.getenv("AWS_REGION_OVERRIDE");
-            System.out.println("AWS_REGION IS " + awsRegion);
-
-            final CloudWatchAsyncClient cloudWatchAsync = CloudWatchAsyncClient.builder()
-                    .endpointOverride(endpoint)
-                    .region(Region.of(awsRegion))
-                    .credentialsProvider(DefaultCredentialsProvider.create())
-                    .asyncConfiguration(ClientAsyncConfiguration.builder()
-                            .advancedOption(SdkAdvancedAsyncClientOption.FUTURE_COMPLETION_EXECUTOR, executorService)
-                            .build())
-                    .overrideConfiguration(ClientOverrideConfiguration.builder()
-                            .apiCallTimeout(apiTimeout)
-                            .apiCallAttemptTimeout(apiTimeout)
-                            .build())
-                    .build();
+            final CloudWatchAsyncClient cloudWatchAsync =
+                    cloudWatchAsyncClientBuilder.credentialsProvider(DefaultCredentialsProvider.create())
+                            .asyncConfiguration(ClientAsyncConfiguration.builder()
+                                    .advancedOption(SdkAdvancedAsyncClientOption.FUTURE_COMPLETION_EXECUTOR,
+                                            executorService)
+                                    .build())
+                            .overrideConfiguration(ClientOverrideConfiguration.builder()
+                                    .apiCallTimeout(apiTimeout)
+                                    .apiCallAttemptTimeout(apiTimeout)
+                                    .build())
+                            .build();
 
             final CloudWatchReporter.Builder builder =
                     CloudWatchReporter.forRegistry(metricRegistry, cloudWatchAsync, METRIC_NAMESPACE);
@@ -94,8 +92,7 @@ class CloudWatchReporterService {
             if (configuration.getConfig().getReportRawCountValue()) {
                 builder.withReportRawCountValue();
             }
-            cloudWatchReporter = builder
-                    .withZeroValuesSubmission()
+            cloudWatchReporter = builder.withZeroValuesSubmission()
                     .withReportRawCountValue()
                     .filter(new ConfiguredMetricsFilter(configuration.getEnabledMetrics()))
                     .build();

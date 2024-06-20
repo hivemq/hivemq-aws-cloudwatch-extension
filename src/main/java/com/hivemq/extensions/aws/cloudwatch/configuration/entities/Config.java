@@ -57,6 +57,9 @@ public class Config {
     @XmlElement(name = "report-raw-count-value", defaultValue = "false")
     private final boolean reportRawCountValue = false;
 
+    @XmlElement(name = "aws-endpoint-override")
+    private final @Nullable String awsEndpointOverride = null;
+
     public final @NotNull List<Metric> getMetrics() {
         return metrics;
     }
@@ -83,6 +86,10 @@ public class Config {
 
     public boolean getZeroValuesSubmission() {
         return zeroValuesSubmission;
+    }
+
+    public @Nullable String getAwsEndpointOverride() {
+        return awsEndpointOverride;
     }
 
     @Override
