@@ -17,6 +17,7 @@ package com.hivemq.extensions.aws.cloudwatch.configuration.entities;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import software.amazon.awssdk.services.cloudwatch.endpoints.internal.Value;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -31,6 +32,7 @@ import java.util.Optional;
 /**
  * @author Anja Helmbrecht-Schaar
  */
+@SuppressWarnings("FieldCanBeLocal")
 @XmlRootElement(name = "cloudwatch-extension-configuration")
 @XmlType(propOrder = {})
 @XmlAccessorType(XmlAccessType.NONE)
@@ -48,6 +50,12 @@ public class Config {
     @XmlElementWrapper(name = "metrics")
     @XmlElement(name = "metric")
     private final @NotNull List<Metric> metrics = new ArrayList<>();
+
+    @XmlElement(name = "zero-values-submission", defaultValue = "false")
+    private final boolean zeroValuesSubmission = false;
+
+    @XmlElement(name = "report-raw-count-value", defaultValue = "false")
+    private final boolean reportRawCountValue = false;
 
     public final @NotNull List<Metric> getMetrics() {
         return metrics;
@@ -67,6 +75,14 @@ public class Config {
 
     public final void setApiTimeout(final @Nullable Integer apiTimeout) {
         this.apiTimeout = apiTimeout;
+    }
+
+    public boolean getReportRawCountValue() {
+        return reportRawCountValue;
+    }
+
+    public boolean getZeroValuesSubmission() {
+        return zeroValuesSubmission;
     }
 
     @Override

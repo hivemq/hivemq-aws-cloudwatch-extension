@@ -85,7 +85,16 @@ class CloudWatchReporterService {
                             .build())
                     .build();
 
-            cloudWatchReporter = CloudWatchReporter.forRegistry(metricRegistry, cloudWatchAsync, METRIC_NAMESPACE)
+            final CloudWatchReporter.Builder builder =
+                    CloudWatchReporter.forRegistry(metricRegistry, cloudWatchAsync, METRIC_NAMESPACE);
+
+            if (configuration.getConfig().getZeroValuesSubmission()) {
+                builder.withZeroValuesSubmission();
+            }
+            if (configuration.getConfig().getReportRawCountValue()) {
+                builder.withReportRawCountValue();
+            }
+            cloudWatchReporter = builder
                     .withZeroValuesSubmission()
                     .withReportRawCountValue()
                     .filter(new ConfiguredMetricsFilter(configuration.getEnabledMetrics()))

@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <cloudwatch-extension-configuration>
     <report-interval>1</report-interval>
+    <zero-value-submission>true</zero-value-submission>
+    <report-raw-count-value>true</report-raw-count-value>
     <metrics>
         <metric>com.hivemq.messages.incoming.publish.count</metric>
     </metrics>
