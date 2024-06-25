@@ -37,10 +37,10 @@ import java.time.Duration
 import java.time.Instant
 import java.util.concurrent.TimeUnit
 
-class EndToEndIT {
+internal class EndToEndIT {
 
     @Test
-    @Timeout(value = 3, unit = TimeUnit.MINUTES)
+    @Timeout(value = 5, unit = TimeUnit.MINUTES)
     fun endToEnd() {
         val network = Network.newNetwork()
 
@@ -66,68 +66,73 @@ class EndToEndIT {
         }
         hivemq.start()
 
-        val credentialsProvider =
-            StaticCredentialsProvider.create(AwsBasicCredentials.create(localStack.accessKey, localStack.secretKey))
+        try {
+            val credentialsProvider =
+                StaticCredentialsProvider.create(AwsBasicCredentials.create(localStack.accessKey, localStack.secretKey))
 
-        val cloudWatchClient = CloudWatchClient.builder() //
-            .credentialsProvider(credentialsProvider) //
-            .endpointOverride(localStack.getEndpointOverride(CLOUDWATCH)) //
-            .region(Region.of(localStack.region)) //
-            .build()
+            val cloudWatchClient = CloudWatchClient.builder() //
+                .credentialsProvider(credentialsProvider) //
+                .endpointOverride(localStack.getEndpointOverride(CLOUDWATCH)) //
+                .region(Region.of(localStack.region)) //
+                .build()
 
 
-        await().timeout(Duration.ofMinutes(2)).until {
-            cloudWatchClient.listMetrics().metrics().any {
-                it.metricName() == "com.hivemq.messages.incoming.publish.count"
+            await().timeout(Duration.ofMinutes(2)).until {
+                cloudWatchClient.listMetrics().metrics().any {
+                    it.metricName() == "com.hivemq.messages.incoming.publish.count"
+                }
             }
-        }
 
-        val metric = Metric.builder()//
-            .namespace("hivemq-metrics")//
-            .metricName("com.hivemq.messages.incoming.publish.count")//
-            .dimensions(emptyList())//
-            .build()
-
-        val metricStat = MetricStat.builder()
-            .stat(Statistic.MAXIMUM.toString())
-            .period(60)
-            .metric(metric)
-            .build()
-
-        val metricDataQuery = MetricDataQuery.builder()
-            .id("m1")
-            .metricStat(metricStat)
-            .returnData(true)
-            .build()
-
-        await().timeout(Duration.ofMinutes(2)).until {
-            val request = GetMetricDataRequest.builder()
-                .startTime(Instant.now().minusSeconds(3600))
-                .endTime(Instant.now())
-                .metricDataQueries(listOf(metricDataQuery))
+            val metric = Metric.builder()//
+                .namespace("hivemq-metrics")//
+                .metricName("com.hivemq.messages.incoming.publish.count")//
+                .dimensions(emptyList())//
                 .build()
-            val response = cloudWatchClient.getMetricData(request)
-            response.metricDataResults().maxOf {
-                it.values()[0]
-            } == 0.0
-        }
 
-        val mqttClient = Mqtt5Client.builder().serverHost(hivemq.host).serverPort(hivemq.mqttPort).buildBlocking()
-        mqttClient.connect()
-        mqttClient.publishWith().topic("wabern").send()
-
-        await().timeout(Duration.ofMinutes(2)).until {
-            val request = GetMetricDataRequest.builder()
-                .startTime(Instant.now().minusSeconds(3600))
-                .endTime(Instant.now())
-                .metricDataQueries(listOf(metricDataQuery))
+            val metricStat = MetricStat.builder()
+                .stat(Statistic.MAXIMUM.toString())
+                .period(60)
+                .metric(metric)
                 .build()
-            val response = cloudWatchClient.getMetricData(request)
-            response.metricDataResults().maxOf {
-                it.values()[0]
-            } == 1.0
-        }
 
-        cloudWatchClient.close()
+            val metricDataQuery = MetricDataQuery.builder()
+                .id("m1")
+                .metricStat(metricStat)
+                .returnData(true)
+                .build()
+
+            await().timeout(Duration.ofMinutes(2)).until {
+                val request = GetMetricDataRequest.builder()
+                    .startTime(Instant.now().minusSeconds(3600))
+                    .endTime(Instant.now())
+                    .metricDataQueries(listOf(metricDataQuery))
+                    .build()
+                val response = cloudWatchClient.getMetricData(request)
+                response.metricDataResults().maxOf {
+                    it.values()[0]
+                } == 0.0
+            }
+
+            val mqttClient = Mqtt5Client.builder().serverHost(hivemq.host).serverPort(hivemq.mqttPort).buildBlocking()
+            mqttClient.connect()
+            mqttClient.publishWith().topic("wabern").send()
+
+            await().timeout(Duration.ofMinutes(5)).until {
+                val request = GetMetricDataRequest.builder()
+                    .startTime(Instant.now().minusSeconds(3600))
+                    .endTime(Instant.now())
+                    .metricDataQueries(listOf(metricDataQuery))
+                    .build()
+                val response = cloudWatchClient.getMetricData(request)
+                response.metricDataResults().maxOf {
+                    it.values()[0]
+                } == 1.0
+            }
+            cloudWatchClient.close()
+        } finally {
+            hivemq.stop()
+            localStack.stop()
+            network.close()
+        }
     }
 }

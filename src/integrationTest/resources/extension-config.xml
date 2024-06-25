@@ -17,9 +17,9 @@
 
 -->
 <cloudwatch-extension-configuration>
-    <aws-endpoint-override>http://localstack:4566</aws-endpoint-override>
+    <cloudwatch-endpoint-override>http://localstack:4566</cloudwatch-endpoint-override>
     <report-interval>1</report-interval>
-    <zero-value-submission>true</zero-value-submission>
+    <zero-values-submission>true</zero-values-submission>
     <report-raw-count-value>true</report-raw-count-value>
     <metrics>
         <metric>com.hivemq.messages.incoming.publish.count</metric>
