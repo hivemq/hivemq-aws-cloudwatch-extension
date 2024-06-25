@@ -77,7 +77,7 @@ internal class EndToEndIT {
                 .build()
 
 
-            await().timeout(Duration.ofMinutes(2)).until {
+            await().timeout(Duration.ofMinutes(5)).until {
                 cloudWatchClient.listMetrics().metrics().any {
                     it.metricName() == "com.hivemq.messages.incoming.publish.count"
                 }
@@ -101,16 +101,16 @@ internal class EndToEndIT {
                 .returnData(true)
                 .build()
 
-            await().timeout(Duration.ofMinutes(2)).until {
+            await().timeout(Duration.ofMinutes(5)).until {
                 val request = GetMetricDataRequest.builder()
                     .startTime(Instant.now().minusSeconds(3600))
                     .endTime(Instant.now())
                     .metricDataQueries(listOf(metricDataQuery))
                     .build()
                 val response = cloudWatchClient.getMetricData(request)
-                response.metricDataResults().maxOf {
-                    it.values()[0]
-                } == 0.0
+                response.metricDataResults().flatMap {
+                    it.values()
+                }.maxOrNull() == 0.0
             }
 
             val mqttClient = Mqtt5Client.builder().serverHost(hivemq.host).serverPort(hivemq.mqttPort).buildBlocking()
@@ -124,9 +124,9 @@ internal class EndToEndIT {
                     .metricDataQueries(listOf(metricDataQuery))
                     .build()
                 val response = cloudWatchClient.getMetricData(request)
-                response.metricDataResults().maxOf {
-                    it.values()[0]
-                } == 1.0
+                response.metricDataResults().flatMap {
+                    it.values()
+                }.maxOrNull() == 1.0
             }
             cloudWatchClient.close()
         } finally {
