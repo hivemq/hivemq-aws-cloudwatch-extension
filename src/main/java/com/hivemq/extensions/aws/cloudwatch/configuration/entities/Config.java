@@ -31,7 +31,7 @@ import java.util.Optional;
 /**
  * @author Anja Helmbrecht-Schaar
  */
-@SuppressWarnings("FieldCanBeLocal")
+@SuppressWarnings({"FieldCanBeLocal", "FieldMayBeFinal"})
 @XmlRootElement(name = "cloudwatch-extension-configuration")
 @XmlType(propOrder = {})
 @XmlAccessorType(XmlAccessType.NONE)
@@ -48,13 +48,13 @@ public class Config {
 
     @XmlElementWrapper(name = "metrics")
     @XmlElement(name = "metric")
-    private final @NotNull List<Metric> metrics = new ArrayList<>();
+    private @NotNull List<Metric> metrics = new ArrayList<>();
 
     @XmlElement(name = "zero-values-submission", defaultValue = "false")
-    private final boolean zeroValuesSubmission = false;
+    private boolean zeroValuesSubmission = false;
 
     @XmlElement(name = "report-raw-count-value", defaultValue = "false")
-    private final boolean reportRawCountValue = false;
+    private boolean reportRawCountValue = false;
 
     @XmlElement(name = "cloudwatch-endpoint-override")
     private final @Nullable String cloudWatchEndpointOverride = null;
