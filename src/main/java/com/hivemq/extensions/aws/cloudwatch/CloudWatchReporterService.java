@@ -66,12 +66,12 @@ class CloudWatchReporterService {
             final Duration apiTimeout = cloudWatchConfig.getApiTimeout().map(Duration::ofMillis).orElse(null);
 
             final CloudWatchAsyncClientBuilder cloudWatchAsyncClientBuilder = CloudWatchAsyncClient.builder();
-            if (configuration.getConfig().getAwsEndpointOverride() != null) {
+            if (configuration.getConfig().getCloudWatchEndpointOverride() != null) {
                 cloudWatchAsyncClientBuilder.endpointOverride(URI.create(configuration.getConfig()
-                        .getAwsEndpointOverride()));
+                        .getCloudWatchEndpointOverride()));
             }
 
-            final CloudWatchAsyncClient cloudWatchAsync =
+            final CloudWatchAsyncClient cloudWatchAsyncClient =
                     cloudWatchAsyncClientBuilder.credentialsProvider(DefaultCredentialsProvider.create())
                             .asyncConfiguration(ClientAsyncConfiguration.builder()
                                     .advancedOption(SdkAdvancedAsyncClientOption.FUTURE_COMPLETION_EXECUTOR,
@@ -84,7 +84,7 @@ class CloudWatchReporterService {
                             .build();
 
             final CloudWatchReporter.Builder builder =
-                    CloudWatchReporter.forRegistry(metricRegistry, cloudWatchAsync, METRIC_NAMESPACE);
+                    CloudWatchReporter.forRegistry(metricRegistry, cloudWatchAsyncClient, METRIC_NAMESPACE);
 
             if (configuration.getConfig().getZeroValuesSubmission()) {
                 builder.withZeroValuesSubmission();
@@ -92,11 +92,10 @@ class CloudWatchReporterService {
             if (configuration.getConfig().getReportRawCountValue()) {
                 builder.withReportRawCountValue();
             }
-            cloudWatchReporter = builder.withZeroValuesSubmission()
-                    .withReportRawCountValue()
+            cloudWatchReporter = builder
                     .filter(new ConfiguredMetricsFilter(configuration.getEnabledMetrics()))
                     .build();
-            cloudWatchReporter.start(cloudWatchConfig.getReportInterval(), TimeUnit.SECONDS);
+            cloudWatchReporter.start(cloudWatchConfig.getReportInterval(), TimeUnit.MINUTES);
             log.info("Started CloudWatchReporter for {} HiveMQ metrics", configuration.getEnabledMetrics().size());
         }
     }

@@ -17,7 +17,6 @@ package com.hivemq.extensions.aws.cloudwatch.configuration.entities;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import software.amazon.awssdk.services.cloudwatch.endpoints.internal.Value;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -57,8 +56,8 @@ public class Config {
     @XmlElement(name = "report-raw-count-value", defaultValue = "false")
     private final boolean reportRawCountValue = false;
 
-    @XmlElement(name = "aws-endpoint-override")
-    private final @Nullable String awsEndpointOverride = null;
+    @XmlElement(name = "cloudwatch-endpoint-override")
+    private final @Nullable String cloudWatchEndpointOverride = null;
 
     public final @NotNull List<Metric> getMetrics() {
         return metrics;
@@ -88,8 +87,8 @@ public class Config {
         return zeroValuesSubmission;
     }
 
-    public @Nullable String getAwsEndpointOverride() {
-        return awsEndpointOverride;
+    public @Nullable String getCloudWatchEndpointOverride() {
+        return cloudWatchEndpointOverride;
     }
 
     @Override
