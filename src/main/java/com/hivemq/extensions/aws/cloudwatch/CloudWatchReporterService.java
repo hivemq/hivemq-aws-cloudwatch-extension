@@ -86,10 +86,10 @@ class CloudWatchReporterService {
             final CloudWatchReporter.Builder builder =
                     CloudWatchReporter.forRegistry(metricRegistry, cloudWatchAsyncClient, METRIC_NAMESPACE);
 
-            if (configuration.getConfig().getZeroValuesSubmission()) {
+            if (cloudWatchConfig.getZeroValuesSubmission()) {
                 builder.withZeroValuesSubmission();
             }
-            if (configuration.getConfig().getReportRawCountValue()) {
+            if (cloudWatchConfig.getReportRawCountValue()) {
                 builder.withReportRawCountValue();
             }
             cloudWatchReporter = builder
