@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.hivemq.extension)
     alias(libs.plugins.defaults)
+    alias(libs.plugins.oci)
     alias(libs.plugins.license)
     alias(libs.plugins.kotlin)
 }
@@ -31,6 +32,14 @@ dependencies {
     runtimeOnly(libs.jaxb.impl)
 }
 
+oci {
+    registries {
+        dockerHub {
+            optionalCredentials()
+        }
+    }
+}
+
 @Suppress("UnstableApiUsage")
 testing {
     suites {
@@ -54,7 +63,12 @@ testing {
                 implementation(libs.testcontainers.hivemq)
                 implementation(libs.testcontainers.junitJupiter)
                 implementation(libs.testcontainers.localstack)
+                implementation(libs.gradleOci.junitJupiter)
                 runtimeOnly(libs.logback.classic)
+            }
+            ociImageDependencies {
+                runtime("hivemq:hivemq4:4.28.2").tag("latest")
+                runtime("localstack:localstack:3.5.0").tag("latest")
             }
         }
     }

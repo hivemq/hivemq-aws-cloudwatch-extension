@@ -16,6 +16,7 @@
 package com.hivemq.extensions.aws.cloudwatch
 
 import com.hivemq.client.mqtt.mqtt5.Mqtt5Client
+import io.github.sgtsilvio.gradle.oci.junit.jupiter.OciImages
 import org.awaitility.Awaitility.await
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.Timeout
@@ -44,14 +45,14 @@ internal class EndToEndIT {
     fun endToEnd() {
         val network = Network.newNetwork()
 
-        val localStack = LocalStackContainer(LOCALSTACK_DOCKER_IMAGE).apply {
+        val localStack = LocalStackContainer(OciImages.getImageName("localstack/localstack")).apply {
             withServices(CLOUDWATCH)
             withNetwork(network)
             withNetworkAliases("localstack")
         }
         localStack.start()
 
-        val hivemq = HiveMQContainer(HIVEMQ_DOCKER_IMAGE).apply {
+        val hivemq = HiveMQContainer(OciImages.getImageName("hivemq/hivemq4")).apply {
             withExtension(MountableFile.forClasspathResource("hivemq-aws-cloudwatch-extension"))
             withFileInExtensionHomeFolder(
                 MountableFile.forClasspathResource("extension-config.xml"),
