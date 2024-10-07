@@ -66,9 +66,11 @@ testing {
                 implementation(libs.gradleOci.junitJupiter)
                 runtimeOnly(libs.logback.classic)
             }
-            ociImageDependencies {
-                runtime("hivemq:hivemq4:4.28.2").tag("latest")
-                runtime("localstack:localstack:3.5.0").tag("latest")
+            oci.of(this) {
+                imageDependencies {
+                    runtime("hivemq:hivemq4:4.28.2").tag("latest")
+                    runtime("localstack:localstack:3.5.0").tag("latest")
+                }
             }
         }
     }
