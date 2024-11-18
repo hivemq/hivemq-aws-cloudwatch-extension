@@ -52,12 +52,13 @@ internal class EndToEndIT {
         }
         localStack.start()
 
-        val hivemq = HiveMQContainer(OciImages.getImageName("hivemq/hivemq4")).apply {
-            withExtension(MountableFile.forClasspathResource("hivemq-aws-cloudwatch-extension"))
-            withFileInExtensionHomeFolder(
+        val hivemq = HiveMQContainer(
+            OciImages.getImageName("hivemq/extensions/hivemq-aws-cloudwatch-extension")
+                .asCompatibleSubstituteFor("hivemq/hivemq4")
+        ).apply {
+            withCopyToContainer(
                 MountableFile.forClasspathResource("extension-config.xml"),
-                "hivemq-aws-cloudwatch-extension",
-                "extension-config.xml"
+                "/opt/hivemq/extensions/hivemq-aws-cloudwatch-extension/extension-config.xml",
             )
             withEnv("AWS_REGION", localStack.region)
             withEnv("AWS_ACCESS_KEY_ID", localStack.accessKey)
