@@ -1,5 +1,5 @@
 [versions]
-awaitility = "4.2.2"
+awaitility = "4.3.0"
 aws-sdkv2 = "2.30.31"
 dropwizard-metrics-cloudwatch = "2.0.8"
 gradleOci-junitJupiter = "0.6.0"
