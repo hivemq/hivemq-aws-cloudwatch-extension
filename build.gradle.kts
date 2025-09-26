@@ -80,7 +80,6 @@ testing {
                 implementation(libs.aws.sdkv2.cloudwatch)
                 implementation(libs.hivemq.mqttClient)
                 implementation(libs.kotlin.stdlib)
-                implementation(libs.okhttp)
                 implementation(libs.testcontainers.hivemq)
                 implementation(libs.testcontainers.junitJupiter)
                 implementation(libs.testcontainers.localstack)
