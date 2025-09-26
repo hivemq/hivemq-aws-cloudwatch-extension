@@ -3,7 +3,6 @@ plugins {
     alias(libs.plugins.defaults)
     alias(libs.plugins.oci)
     alias(libs.plugins.license)
-    alias(libs.plugins.kotlin)
 }
 
 group = "com.hivemq.extensions"
@@ -79,7 +78,6 @@ testing {
                 implementation(libs.awaitility)
                 implementation(libs.aws.sdkv2.cloudwatch)
                 implementation(libs.hivemq.mqttClient)
-                implementation(libs.kotlin.stdlib)
                 implementation(libs.testcontainers.hivemq)
                 implementation(libs.testcontainers.junitJupiter)
                 implementation(libs.testcontainers.localstack)
