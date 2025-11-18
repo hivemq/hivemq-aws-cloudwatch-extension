@@ -78,6 +78,7 @@ testing {
                 implementation(libs.awaitility)
                 implementation(libs.aws.sdkv2.cloudwatch)
                 implementation(libs.hivemq.mqttClient)
+                implementation(libs.testcontainers)
                 implementation(libs.testcontainers.hivemq)
                 implementation(libs.testcontainers.junitJupiter)
                 implementation(libs.testcontainers.localstack)

@@ -15,7 +15,6 @@
  */
 package com.hivemq.extensions.aws.cloudwatch;
 
-import com.hivemq.client.mqtt.mqtt5.Mqtt5BlockingClient;
 import com.hivemq.client.mqtt.mqtt5.Mqtt5Client;
 import io.github.sgtsilvio.gradle.oci.junit.jupiter.OciImages;
 import org.awaitility.Durations;
@@ -25,9 +24,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import org.testcontainers.containers.Network;
-import org.testcontainers.containers.localstack.LocalStackContainer;
-import org.testcontainers.containers.localstack.LocalStackContainer.Service;
 import org.testcontainers.hivemq.HiveMQContainer;
+import org.testcontainers.localstack.LocalStackContainer;
 import org.testcontainers.utility.MountableFile;
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
@@ -42,7 +40,6 @@ import software.amazon.awssdk.services.cloudwatch.model.Statistic;
 import java.time.Instant;
 import java.util.Collections;
 import java.util.List;
-import java.util.OptionalDouble;
 import java.util.concurrent.TimeUnit;
 
 import static org.awaitility.Awaitility.await;
@@ -52,18 +49,19 @@ class EndToEndIT {
     private final @NotNull Network network = org.testcontainers.containers.Network.newNetwork();
 
     private final @NotNull LocalStackContainer localStack =
-            new LocalStackContainer(OciImages.getImageName("localstack/localstack")).withServices(Service.CLOUDWATCH)
+            new LocalStackContainer(OciImages.getImageName("localstack/localstack")).withServices("cloudwatch")
                     .withNetwork(network)
                     .withNetworkAliases("localstack");
 
     private final @NotNull HiveMQContainer hivemq =
             new HiveMQContainer(OciImages.getImageName("hivemq/extensions/hivemq-aws-cloudwatch-extension")
-                    .asCompatibleSubstituteFor("hivemq/hivemq4")).withCopyToContainer(MountableFile.forClasspathResource(
-                                    "extension-config.xml"),
+                    .asCompatibleSubstituteFor("hivemq/hivemq4")) //
+                    .withCopyToContainer(MountableFile.forClasspathResource("extension-config.xml"),
                             "/opt/hivemq/extensions/hivemq-aws-cloudwatch-extension/extension-config.xml")
                     .withEnv("AWS_REGION", localStack.getRegion())
                     .withEnv("AWS_ACCESS_KEY_ID", localStack.getAccessKey())
                     .withEnv("AWS_SECRET_ACCESS_KEY", localStack.getSecretKey())
+                    .withEnv("HIVEMQ_DISABLE_STATISTICS", "true")
                     .withLogConsumer(outputFrame -> System.out.println("HIVEMQ: " +
                             outputFrame.getUtf8StringWithoutLineEnding()))
                     .withNetwork(network);
@@ -84,13 +82,13 @@ class EndToEndIT {
     @Test
     @Timeout(value = 5, unit = TimeUnit.MINUTES)
     void endToEnd() {
-        final StaticCredentialsProvider credentialsProvider =
+        final var credentialsProvider =
                 StaticCredentialsProvider.create(AwsBasicCredentials.create(localStack.getAccessKey(),
                         localStack.getSecretKey()));
 
-        final CloudWatchClient cloudWatchClient = CloudWatchClient.builder()
+        final var cloudWatchClient = CloudWatchClient.builder()
                 .credentialsProvider(credentialsProvider)
-                .endpointOverride(localStack.getEndpointOverride(Service.CLOUDWATCH))
+                .endpointOverride(localStack.getEndpoint())
                 .region(Region.of(localStack.getRegion()))
                 .build();
 
@@ -100,17 +98,16 @@ class EndToEndIT {
                         .stream()
                         .anyMatch(metric -> "com.hivemq.messages.incoming.publish.count".equals(metric.metricName())));
 
-        final Metric metric = Metric.builder()
+        final var metric = Metric.builder()
                 .namespace("hivemq-metrics")
                 .metricName("com.hivemq.messages.incoming.publish.count")
                 .dimensions(Collections.emptyList())
                 .build();
 
-        final MetricStat metricStat =
+        final var metricStat =
                 MetricStat.builder().stat(Statistic.MAXIMUM.toString()).period(60).metric(metric).build();
 
-        final MetricDataQuery metricDataQuery =
-                MetricDataQuery.builder().id("m1").metricStat(metricStat).returnData(true).build();
+        final var metricDataQuery = MetricDataQuery.builder().id("m1").metricStat(metricStat).returnData(true).build();
 
         await().timeout(Durations.FIVE_MINUTES).until(() -> {
             final GetMetricDataRequest request = GetMetricDataRequest.builder()
@@ -119,7 +116,7 @@ class EndToEndIT {
                     .metricDataQueries(List.of(metricDataQuery))
                     .build();
             final var response = cloudWatchClient.getMetricData(request);
-            final OptionalDouble maxValue = response.metricDataResults()
+            final var maxValue = response.metricDataResults()
                     .stream()
                     .flatMap(result -> result.values().stream())
                     .mapToDouble(Double::doubleValue)
@@ -127,19 +124,19 @@ class EndToEndIT {
             return maxValue.isPresent() && maxValue.getAsDouble() == 0.0;
         });
 
-        final Mqtt5BlockingClient mqttClient =
+        final var mqttClient =
                 Mqtt5Client.builder().serverHost(hivemq.getHost()).serverPort(hivemq.getMqttPort()).buildBlocking();
         mqttClient.connect();
         mqttClient.publishWith().topic("wabern").send();
 
         await().timeout(Durations.FIVE_MINUTES).until(() -> {
-            final GetMetricDataRequest request = GetMetricDataRequest.builder()
+            final var request = GetMetricDataRequest.builder()
                     .startTime(Instant.now().minusSeconds(3600))
                     .endTime(Instant.now())
                     .metricDataQueries(List.of(metricDataQuery))
                     .build();
             final var response = cloudWatchClient.getMetricData(request);
-            final OptionalDouble maxValue = response.metricDataResults()
+            final var maxValue = response.metricDataResults()
                     .stream()
                     .flatMap(result -> result.values().stream())
                     .mapToDouble(Double::doubleValue)
