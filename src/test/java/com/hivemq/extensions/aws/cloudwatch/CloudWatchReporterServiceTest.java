@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.hivemq.extensions.aws.cloudwatch;
 
 import com.codahale.metrics.MetricRegistry;
@@ -33,18 +34,15 @@ import static org.mockito.Mockito.when;
 
 class CloudWatchReporterServiceTest {
 
+    private final @NotNull ExtensionConfiguration extensionConfiguration = mock();
+    private final @NotNull ManagedExtensionExecutorService extensionExecutorService = mock();
+    private final @NotNull MetricRegistry metricRegistry = mock();
+
     private final @NotNull CloudWatchReporterService reporterService = new CloudWatchReporterService();
-    private @NotNull ExtensionConfiguration extensionConfiguration;
-    private @NotNull ManagedExtensionExecutorService extensionExecutorService;
-    private @NotNull MetricRegistry metricRegistry;
 
     @BeforeEach
     void setUp() {
-        extensionConfiguration = mock(ExtensionConfiguration.class);
-        extensionExecutorService = mock(ManagedExtensionExecutorService.class);
-        metricRegistry = mock(MetricRegistry.class);
-
-        final Config config = new Config();
+        final var config = new Config();
         when(extensionConfiguration.getConfig()).thenReturn(config);
 
         System.setProperty("aws.region", "us-east-1");

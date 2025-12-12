@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.hivemq.extensions.aws.cloudwatch;
 
 import com.hivemq.client.mqtt.mqtt5.Mqtt5Client;
@@ -51,7 +52,9 @@ class EndToEndIT {
     private final @NotNull LocalStackContainer localStack =
             new LocalStackContainer(OciImages.getImageName("localstack/localstack")).withServices("cloudwatch")
                     .withNetwork(network)
-                    .withNetworkAliases("localstack");
+                    .withNetworkAliases("localstack")
+                    .withLogConsumer(outputFrame -> System.out.println("LOCALSTACK: " +
+                            outputFrame.getUtf8StringWithoutLineEnding()));
 
     private final @NotNull HiveMQContainer hivemq =
             new HiveMQContainer(OciImages.getImageName("hivemq/extensions/hivemq-aws-cloudwatch-extension")
@@ -92,7 +95,8 @@ class EndToEndIT {
                 .region(Region.of(localStack.getRegion()))
                 .build();
 
-        await().timeout(Durations.FIVE_MINUTES)
+        await().timeout(Durations.TWO_MINUTES)
+                .pollInterval(Durations.ONE_SECOND)
                 .until(() -> cloudWatchClient.listMetrics()
                         .metrics()
                         .stream()
@@ -109,7 +113,7 @@ class EndToEndIT {
 
         final var metricDataQuery = MetricDataQuery.builder().id("m1").metricStat(metricStat).returnData(true).build();
 
-        await().timeout(Durations.FIVE_MINUTES).until(() -> {
+        await().timeout(Durations.TWO_MINUTES).pollInterval(Durations.ONE_SECOND).until(() -> {
             final GetMetricDataRequest request = GetMetricDataRequest.builder()
                     .startTime(Instant.now().minusSeconds(3600))
                     .endTime(Instant.now())
@@ -129,7 +133,7 @@ class EndToEndIT {
         mqttClient.connect();
         mqttClient.publishWith().topic("wabern").send();
 
-        await().timeout(Durations.FIVE_MINUTES).until(() -> {
+        await().timeout(Durations.TWO_MINUTES).pollInterval(Durations.ONE_SECOND).until(() -> {
             final var request = GetMetricDataRequest.builder()
                     .startTime(Instant.now().minusSeconds(3600))
                     .endTime(Instant.now())

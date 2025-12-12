@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.hivemq.extensions.aws.cloudwatch;
 
 import com.codahale.metrics.Metric;
@@ -20,7 +21,6 @@ import com.codahale.metrics.MetricFilter;
 import com.codahale.metrics.MetricRegistry;
 import com.hivemq.extension.sdk.api.services.ManagedExtensionExecutorService;
 import com.hivemq.extensions.aws.cloudwatch.configuration.ExtensionConfiguration;
-import com.hivemq.extensions.aws.cloudwatch.configuration.entities.Config;
 import io.github.azagniotov.metrics.reporter.cloudwatch.CloudWatchReporter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -31,7 +31,6 @@ import software.amazon.awssdk.core.client.config.ClientAsyncConfiguration;
 import software.amazon.awssdk.core.client.config.ClientOverrideConfiguration;
 import software.amazon.awssdk.core.client.config.SdkAdvancedAsyncClientOption;
 import software.amazon.awssdk.services.cloudwatch.CloudWatchAsyncClient;
-import software.amazon.awssdk.services.cloudwatch.CloudWatchAsyncClientBuilder;
 
 import java.net.URI;
 import java.time.Duration;
@@ -39,7 +38,7 @@ import java.util.Collection;
 import java.util.concurrent.TimeUnit;
 
 /**
- * @author Anja Helmbrecht-Schaar
+ * @author David Sondermann
  */
 class CloudWatchReporterService {
 
@@ -57,44 +56,36 @@ class CloudWatchReporterService {
             final @NotNull ExtensionConfiguration configuration,
             final @NotNull ManagedExtensionExecutorService executorService,
             final @NotNull MetricRegistry metricRegistry) {
-
-        final Config cloudWatchConfig = configuration.getConfig();
-
+        final var cloudWatchConfig = configuration.getConfig();
         if (configuration.getEnabledMetrics().isEmpty()) {
             log.warn("No HiveMQ metrics enabled, no AWS CloudWatch report started");
         } else {
-            final Duration apiTimeout = cloudWatchConfig.getApiTimeout().map(Duration::ofMillis).orElse(null);
+            final var apiTimeout = cloudWatchConfig.getApiTimeout().map(Duration::ofMillis).orElse(null);
 
-            final CloudWatchAsyncClientBuilder cloudWatchAsyncClientBuilder = CloudWatchAsyncClient.builder();
+            final var cloudWatchAsyncClientBuilder = CloudWatchAsyncClient.builder()
+                    .credentialsProvider(DefaultCredentialsProvider.builder().build())
+                    .asyncConfiguration(ClientAsyncConfiguration.builder()
+                            .advancedOption(SdkAdvancedAsyncClientOption.FUTURE_COMPLETION_EXECUTOR, executorService)
+                            .build())
+                    .overrideConfiguration(ClientOverrideConfiguration.builder()
+                            .apiCallTimeout(apiTimeout)
+                            .apiCallAttemptTimeout(apiTimeout)
+                            .build());
             if (configuration.getConfig().getCloudWatchEndpointOverride() != null) {
                 cloudWatchAsyncClientBuilder.endpointOverride(URI.create(configuration.getConfig()
                         .getCloudWatchEndpointOverride()));
             }
 
-            final CloudWatchAsyncClient cloudWatchAsyncClient =
-                    cloudWatchAsyncClientBuilder.credentialsProvider(DefaultCredentialsProvider.create())
-                            .asyncConfiguration(ClientAsyncConfiguration.builder()
-                                    .advancedOption(SdkAdvancedAsyncClientOption.FUTURE_COMPLETION_EXECUTOR,
-                                            executorService)
-                                    .build())
-                            .overrideConfiguration(ClientOverrideConfiguration.builder()
-                                    .apiCallTimeout(apiTimeout)
-                                    .apiCallAttemptTimeout(apiTimeout)
-                                    .build())
-                            .build();
-
-            final CloudWatchReporter.Builder builder =
-                    CloudWatchReporter.forRegistry(metricRegistry, cloudWatchAsyncClient, METRIC_NAMESPACE);
-
+            final var cloudWatchReporterBuilder = CloudWatchReporter //
+                    .forRegistry(metricRegistry, cloudWatchAsyncClientBuilder.build(), METRIC_NAMESPACE) //
+                    .filter(new ConfiguredMetricsFilter(configuration.getEnabledMetrics()));
             if (cloudWatchConfig.getZeroValuesSubmission()) {
-                builder.withZeroValuesSubmission();
+                cloudWatchReporterBuilder.withZeroValuesSubmission();
             }
             if (cloudWatchConfig.getReportRawCountValue()) {
-                builder.withReportRawCountValue();
+                cloudWatchReporterBuilder.withReportRawCountValue();
             }
-            cloudWatchReporter = builder
-                    .filter(new ConfiguredMetricsFilter(configuration.getEnabledMetrics()))
-                    .build();
+            cloudWatchReporter = cloudWatchReporterBuilder.build();
             cloudWatchReporter.start(cloudWatchConfig.getReportInterval(), TimeUnit.MINUTES);
             log.info("Started CloudWatchReporter for {} HiveMQ metrics", configuration.getEnabledMetrics().size());
         }
