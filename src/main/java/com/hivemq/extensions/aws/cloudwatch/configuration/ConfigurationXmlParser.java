@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.hivemq.extensions.aws.cloudwatch.configuration;
 
 import com.hivemq.extension.sdk.api.annotations.ThreadSafe;
@@ -24,19 +25,18 @@ import org.slf4j.LoggerFactory;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
 import java.io.File;
 import java.io.IOException;
 
 /**
- * @author Anja Helmbrecht-Schaar
+ * @author David Sondermann
  */
 @ThreadSafe
 class ConfigurationXmlParser {
 
     private static final @NotNull Logger log = LoggerFactory.getLogger(ConfigurationXmlParser.class);
 
-    //jaxb context is thread safe
+    // JAXB context is thread safe
     private final @NotNull JAXBContext jaxb;
 
     ConfigurationXmlParser() {
@@ -50,7 +50,7 @@ class ConfigurationXmlParser {
 
     final @NotNull Config unmarshalExtensionConfig(final @NotNull File file) throws IOException {
         try {
-            final Unmarshaller unmarshaller = jaxb.createUnmarshaller();
+            final var unmarshaller = jaxb.createUnmarshaller();
             return (Config) unmarshaller.unmarshal(file);
         } catch (final JAXBException e) {
             log.error("Error in the AWS CloudWatch Extension. Could not unmarshal XML configuration", e);

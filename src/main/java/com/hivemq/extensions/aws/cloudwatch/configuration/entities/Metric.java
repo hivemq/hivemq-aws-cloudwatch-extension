@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.hivemq.extensions.aws.cloudwatch.configuration.entities;
 
 import org.jetbrains.annotations.NotNull;
@@ -25,7 +26,7 @@ import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.XmlValue;
 
 /**
- * @author Anja Helmbrecht-Schaar
+ * @author David Sondermann
  */
 @XmlType(propOrder = {})
 @XmlAccessorType(XmlAccessType.NONE)

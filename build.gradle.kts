@@ -20,6 +20,18 @@ hivemqExtension {
     }
 }
 
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+tasks.compileJava {
+    javaCompiler = javaToolchains.compilerFor {
+        languageVersion = JavaLanguageVersion.of(11)
+    }
+}
+
 dependencies {
     compileOnly(libs.jetbrains.annotations)
 
@@ -69,6 +81,7 @@ testing {
         "test"(JvmTestSuite::class) {
             dependencies {
                 compileOnly(libs.jetbrains.annotations)
+                implementation(libs.assertj)
                 implementation(libs.mockito)
             }
         }

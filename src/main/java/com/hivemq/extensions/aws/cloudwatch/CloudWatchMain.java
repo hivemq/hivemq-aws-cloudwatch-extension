@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.hivemq.extensions.aws.cloudwatch;
 
 import com.codahale.metrics.MetricRegistry;
@@ -28,14 +29,12 @@ import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
-
 /**
- * Main class for HiveMQ AWS CloudWatch extension
+ * Main class for HiveMQ AWS CloudWatch extension.
  * <p>
- * After HiveMQ is started, the configured HiveMQ metrics will be exposed to Amazon AWS - CloudWatch
+ * After HiveMQ is started, the configured HiveMQ metrics will be exposed to AWS CloudWatch.
  *
- * @author Anja Helmbrecht-Schaar
+ * @author David Sondermann
  */
 @SuppressWarnings("unused")
 public class CloudWatchMain implements ExtensionMain {
@@ -50,10 +49,9 @@ public class CloudWatchMain implements ExtensionMain {
     public final void extensionStart(
             final @NotNull ExtensionStartInput extensionStartInput,
             final @NotNull ExtensionStartOutput extensionStartOutput) {
-
         try {
-            final File extensionHomeFolder = extensionStartInput.getExtensionInformation().getExtensionHomeFolder();
-            final ExtensionConfiguration extensionConfiguration = new ExtensionConfiguration(extensionHomeFolder);
+            final var extensionHomeFolder = extensionStartInput.getExtensionInformation().getExtensionHomeFolder();
+            final var extensionConfiguration = new ExtensionConfiguration(extensionHomeFolder);
             reporterService.startCloudWatchReporter(extensionConfiguration, service, metricRegistry);
             log.info("Start {}", extensionStartInput.getExtensionInformation().getName());
         } catch (final Exception e) {
@@ -66,7 +64,6 @@ public class CloudWatchMain implements ExtensionMain {
     public final void extensionStop(
             final @NotNull ExtensionStopInput extensionStopInput,
             final @NotNull ExtensionStopOutput extensionStopOutput) {
-
         reporterService.stopCloudWatchReporter();
         log.info("Stop {}", extensionStopInput.getExtensionInformation().getName());
     }

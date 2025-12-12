@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.hivemq.extensions.aws.cloudwatch.configuration.entities;
 
 import org.jetbrains.annotations.NotNull;
@@ -29,7 +30,7 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * @author Anja Helmbrecht-Schaar
+ * @author David Sondermann
  */
 @SuppressWarnings({"FieldCanBeLocal", "FieldMayBeFinal"})
 @XmlRootElement(name = "cloudwatch-extension-configuration")

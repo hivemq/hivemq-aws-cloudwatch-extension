@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.hivemq.extensions.aws.cloudwatch.configuration;
 
 import com.hivemq.extensions.aws.cloudwatch.configuration.entities.Config;
-import com.hivemq.extensions.aws.cloudwatch.configuration.entities.Metric;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,12 +26,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
- * @author Anja Helmbrecht-Schaar
+ * @author David Sondermann
  */
 public class ExtensionConfiguration {
 
@@ -58,9 +57,7 @@ public class ExtensionConfiguration {
      * @return the new config based on the file contents or null if the config is invalid
      */
     private @NotNull Config read(final @NotNull File file) {
-
-        final Config defaultConfig = new Config();
-
+        final var defaultConfig = new Config();
         if (file.exists() && file.canRead() && file.length() > 0) {
             return doRead(file, defaultConfig);
         } else {
@@ -72,20 +69,17 @@ public class ExtensionConfiguration {
 
     private @NotNull Config doRead(final @NotNull File file, final @NotNull Config defaultConfig) {
         try {
-            final Config newConfig = configurationXmlParser.unmarshalExtensionConfig(file);
+            final var newConfig = configurationXmlParser.unmarshalExtensionConfig(file);
             if (newConfig.getApiTimeout().isPresent() && newConfig.getApiTimeout().get() < 1) {
                 log.warn("Connection timeout must be greater than 0, using default timeout");
                 newConfig.setApiTimeout(defaultConfig.getApiTimeout().orElse(null));
             }
-
             if (newConfig.getReportInterval() < 1) {
                 log.warn("Report interval must be greater than 0, using default interval {}",
                         defaultConfig.getReportInterval());
                 newConfig.setReportInterval(defaultConfig.getReportInterval());
             }
-
             return newConfig;
-
         } catch (final IOException e) {
             log.warn("Could not read extension configuration file, reason: {}, using defaults {} ",
                     e.getMessage(),
@@ -96,7 +90,7 @@ public class ExtensionConfiguration {
 
     public @NotNull List<String> getEnabledMetrics() {
         if (enabledMetrics.isEmpty()) {
-            final Lock writeLock = lock.writeLock();
+            final var writeLock = lock.writeLock();
             writeLock.lock();
             try {
                 enabledMetrics = readEnabledMetrics();
@@ -109,16 +103,15 @@ public class ExtensionConfiguration {
     }
 
     private @NotNull List<String> readEnabledMetrics() {
-        final Lock readLock = lock.readLock();
+        final var readLock = lock.readLock();
         readLock.lock();
         try {
-            final List<String> newMetrics = new ArrayList<>();
-
+            final var newMetrics = new ArrayList<String>();
             if (config.getMetrics().isEmpty()) {
                 log.error("Could not find any enabled HiveMQ metrics in configuration, no metrics were reported. ");
                 return List.of();
             }
-            for (final Metric metric : config.getMetrics()) {
+            for (final var metric : config.getMetrics()) {
                 if (metric.isEnabled() && !metric.getValue().isEmpty()) {
                     newMetrics.add(metric.getValue());
                     log.trace("Added HiveMQ metric {} ", metric.getValue());
