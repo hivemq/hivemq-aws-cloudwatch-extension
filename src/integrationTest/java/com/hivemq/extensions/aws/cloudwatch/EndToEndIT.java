@@ -33,19 +33,19 @@ import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.cloudwatch.CloudWatchClient;
 import software.amazon.awssdk.services.cloudwatch.model.GetMetricDataRequest;
-import software.amazon.awssdk.services.cloudwatch.model.Metric;
 import software.amazon.awssdk.services.cloudwatch.model.MetricDataQuery;
 import software.amazon.awssdk.services.cloudwatch.model.MetricStat;
 import software.amazon.awssdk.services.cloudwatch.model.Statistic;
 
 import java.time.Instant;
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import static org.awaitility.Awaitility.await;
 
 class EndToEndIT {
+
+    private static final String INCOMING_PUBLISH_METRIC_NAME = "com.hivemq.messages.incoming.publish.count";
 
     private final @NotNull Network network = org.testcontainers.containers.Network.newNetwork();
 
@@ -100,13 +100,15 @@ class EndToEndIT {
                 .until(() -> cloudWatchClient.listMetrics()
                         .metrics()
                         .stream()
-                        .anyMatch(metric -> "com.hivemq.messages.incoming.publish.count".equals(metric.metricName())));
+                        .anyMatch(metric -> metric.metricName().equals(INCOMING_PUBLISH_METRIC_NAME)));
 
-        final var metric = Metric.builder()
-                .namespace("hivemq-metrics")
-                .metricName("com.hivemq.messages.incoming.publish.count")
-                .dimensions(Collections.emptyList())
-                .build();
+        // get the metric with its actual dimensions from ListMetrics
+        final var metric = cloudWatchClient.listMetrics()
+                .metrics()
+                .stream()
+                .filter(m -> m.metricName().equals(INCOMING_PUBLISH_METRIC_NAME))
+                .findFirst()
+                .orElseThrow();
 
         final var metricStat =
                 MetricStat.builder().stat(Statistic.MAXIMUM.toString()).period(60).metric(metric).build();

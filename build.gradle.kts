@@ -101,7 +101,7 @@ testing {
             oci.of(this) {
                 imageDependencies {
                     runtime(project).tag("latest")
-                    runtime("localstack:localstack:3.5.0").tag("latest")
+                    runtime("localstack:localstack:4.12.0").tag("latest")
                 }
             }
         }
