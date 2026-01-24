@@ -1,5 +1,5 @@
 [versions]
-assertj = "3.27.6"
+assertj = "3.27.7"
 awaitility = "4.3.0"
 aws-sdkv2 = "2.40.5"
 dropwizard-metrics-cloudwatch = "2.0.8"
