@@ -127,4 +127,17 @@ class ConfigurationTest {
         assertThat(config.getApiTimeout()).isEmpty();
         assertThat(config.getMetrics()).isEmpty();
     }
+
+    @Test
+    void loadConfiguration_confFolder() throws IOException {
+        final var confDir = extensionDir.toPath().resolve("conf");
+        Files.createDirectories(confDir);
+        Files.writeString(confDir.resolve("config.xml"), """
+                <cloudwatch-extension-configuration>
+                    <report-interval>10</report-interval>
+                </cloudwatch-extension-configuration>""");
+
+        final var config = new ExtensionConfiguration(extensionDir).getConfig();
+        assertThat(config.getReportInterval()).isEqualTo(10);
+    }
 }

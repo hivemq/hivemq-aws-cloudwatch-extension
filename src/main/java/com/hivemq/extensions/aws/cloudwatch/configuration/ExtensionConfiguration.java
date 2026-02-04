@@ -36,7 +36,8 @@ public class ExtensionConfiguration {
 
     private static final @NotNull Logger log = LoggerFactory.getLogger(ExtensionConfiguration.class);
 
-    private static final @NotNull String EXTENSION_CONFIG_FILE_NAME = "extension-config.xml";
+    static final @NotNull String CONFIG_PATH = "conf/config.xml";
+    static final @NotNull String LEGACY_CONFIG_PATH = "extension-config.xml";
 
     private final @NotNull ConfigurationXmlParser configurationXmlParser = new ConfigurationXmlParser();
     private final @NotNull ReadWriteLock lock = new ReentrantReadWriteLock();
@@ -45,7 +46,11 @@ public class ExtensionConfiguration {
     private @NotNull List<String> enabledMetrics = new ArrayList<>();
 
     public ExtensionConfiguration(final @NotNull File extensionHomeFolder) {
-        config = read(new File(extensionHomeFolder, EXTENSION_CONFIG_FILE_NAME));
+        final var configResolver = new ConfigResolver(extensionHomeFolder.toPath(),
+                "AWS CloudWatch Extension",
+                CONFIG_PATH,
+                LEGACY_CONFIG_PATH);
+        config = read(configResolver.get().toFile());
     }
 
     public @NotNull Config getConfig() {
