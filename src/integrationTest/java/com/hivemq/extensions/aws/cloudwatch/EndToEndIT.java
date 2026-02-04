@@ -59,8 +59,8 @@ class EndToEndIT {
     private final @NotNull HiveMQContainer hivemq =
             new HiveMQContainer(OciImages.getImageName("hivemq/extensions/hivemq-aws-cloudwatch-extension")
                     .asCompatibleSubstituteFor("hivemq/hivemq4")) //
-                    .withCopyToContainer(MountableFile.forClasspathResource("extension-config.xml"),
-                            "/opt/hivemq/extensions/hivemq-aws-cloudwatch-extension/extension-config.xml")
+                    .withCopyToContainer(MountableFile.forClasspathResource("config.xml"),
+                            "/opt/hivemq/extensions/hivemq-aws-cloudwatch-extension/conf/config.xml")
                     .withEnv("AWS_REGION", localStack.getRegion())
                     .withEnv("AWS_ACCESS_KEY_ID", localStack.getAccessKey())
                     .withEnv("AWS_SECRET_ACCESS_KEY", localStack.getSecretKey())
@@ -150,5 +150,42 @@ class EndToEndIT {
             return maxValue.isPresent() && maxValue.getAsDouble() == 1.0;
         });
         cloudWatchClient.close();
+    }
+
+    @Test
+    @Timeout(value = 5, unit = TimeUnit.MINUTES)
+    void configAtLegacyLocation_metricsReportedToCloudWatch() {
+        final var legacyHivemq =
+                new HiveMQContainer(OciImages.getImageName("hivemq/extensions/hivemq-aws-cloudwatch-extension")
+                        .asCompatibleSubstituteFor("hivemq/hivemq4")) //
+                        .withCopyToContainer(MountableFile.forClasspathResource("config.xml"),
+                                "/opt/hivemq/extensions/hivemq-aws-cloudwatch-extension/extension-config.xml")
+                        .withEnv("AWS_REGION", localStack.getRegion())
+                        .withEnv("AWS_ACCESS_KEY_ID", localStack.getAccessKey())
+                        .withEnv("AWS_SECRET_ACCESS_KEY", localStack.getSecretKey())
+                        .withEnv("HIVEMQ_DISABLE_STATISTICS", "true")
+                        .withNetwork(network);
+
+        try (legacyHivemq) {
+            legacyHivemq.start();
+
+            final var credentialsProvider =
+                    StaticCredentialsProvider.create(AwsBasicCredentials.create(localStack.getAccessKey(),
+                            localStack.getSecretKey()));
+
+            try (final var cloudWatchClient = CloudWatchClient.builder()
+                    .credentialsProvider(credentialsProvider)
+                    .endpointOverride(localStack.getEndpoint())
+                    .region(Region.of(localStack.getRegion()))
+                    .build()) {
+
+                await().timeout(Durations.TWO_MINUTES)
+                        .pollInterval(Durations.ONE_SECOND)
+                        .until(() -> cloudWatchClient.listMetrics()
+                                .metrics()
+                                .stream()
+                                .anyMatch(metric -> metric.metricName().equals(INCOMING_PUBLISH_METRIC_NAME)));
+            }
+        }
     }
 }

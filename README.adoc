@@ -32,13 +32,13 @@ At the time of writing the AWS prices are the following:
 
 * Download the extension from the {hivemq-extension-downloads}[HiveMQ Marketplace^].
 * Copy the content of the zip file to the `extensions` folder of your HiveMQ nodes.
-* Modify the `extension-config.xml` file for your needs.
+* Modify the `conf/config.xml` file for your needs.
 
 == Extension Configuration
 
-The CloudWatch extension uses its own configuration file 'extension-config.xml'.
+The CloudWatch extension uses its own configuration file 'conf/config.xml'.
 
-=== extension-config.xml
+=== conf/config.xml
 
 The following properties are available:
 
