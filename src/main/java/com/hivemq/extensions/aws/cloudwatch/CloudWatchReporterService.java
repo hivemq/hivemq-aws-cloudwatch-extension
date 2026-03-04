@@ -72,8 +72,8 @@ class CloudWatchReporterService {
                             .apiCallAttemptTimeout(apiTimeout)
                             .build());
             if (configuration.getConfig().getCloudWatchEndpointOverride() != null) {
-                cloudWatchAsyncClientBuilder.endpointOverride(URI.create(configuration.getConfig()
-                        .getCloudWatchEndpointOverride()));
+                cloudWatchAsyncClientBuilder
+                        .endpointOverride(URI.create(configuration.getConfig().getCloudWatchEndpointOverride()));
             }
 
             final var cloudWatchReporterBuilder = CloudWatchReporter //
