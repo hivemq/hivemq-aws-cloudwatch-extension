@@ -94,13 +94,7 @@ public class Config {
 
     @Override
     public final @NotNull String toString() {
-        return "Config{" +
-                "reportInterval=" +
-                reportInterval +
-                ", apiTimeout=" +
-                apiTimeout +
-                ", metrics=" +
-                metrics +
+        return "Config{" + "reportInterval=" + reportInterval + ", apiTimeout=" + apiTimeout + ", metrics=" + metrics +
                 '}';
     }
 }

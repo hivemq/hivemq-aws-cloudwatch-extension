@@ -72,12 +72,12 @@ class CloudWatchReporterService {
                             .apiCallAttemptTimeout(apiTimeout)
                             .build());
             if (configuration.getConfig().getCloudWatchEndpointOverride() != null) {
-                cloudWatchAsyncClientBuilder.endpointOverride(URI.create(configuration.getConfig()
-                        .getCloudWatchEndpointOverride()));
+                cloudWatchAsyncClientBuilder
+                        .endpointOverride(URI.create(configuration.getConfig().getCloudWatchEndpointOverride()));
             }
 
-            final var cloudWatchReporterBuilder = CloudWatchReporter //
-                    .forRegistry(metricRegistry, cloudWatchAsyncClientBuilder.build(), METRIC_NAMESPACE) //
+            final var cloudWatchReporterBuilder = CloudWatchReporter
+                    .forRegistry(metricRegistry, cloudWatchAsyncClientBuilder.build(), METRIC_NAMESPACE)
                     .filter(new ConfiguredMetricsFilter(configuration.getEnabledMetrics()));
             if (cloudWatchConfig.getZeroValuesSubmission()) {
                 cloudWatchReporterBuilder.withZeroValuesSubmission();

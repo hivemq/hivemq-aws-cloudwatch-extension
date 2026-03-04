@@ -53,20 +53,20 @@ class EndToEndIT {
             new LocalStackContainer(OciImages.getImageName("localstack/localstack")).withServices("cloudwatch")
                     .withNetwork(network)
                     .withNetworkAliases("localstack")
-                    .withLogConsumer(outputFrame -> System.out.println("LOCALSTACK: " +
-                            outputFrame.getUtf8StringWithoutLineEnding()));
+                    .withLogConsumer(outputFrame -> System.out
+                            .println("LOCALSTACK: " + outputFrame.getUtf8StringWithoutLineEnding()));
 
     private final @NotNull HiveMQContainer hivemq =
             new HiveMQContainer(OciImages.getImageName("hivemq/extensions/hivemq-aws-cloudwatch-extension")
-                    .asCompatibleSubstituteFor("hivemq/hivemq4")) //
+                    .asCompatibleSubstituteFor("hivemq/hivemq4"))
                     .withCopyToContainer(MountableFile.forClasspathResource("config.xml"),
                             "/opt/hivemq/extensions/hivemq-aws-cloudwatch-extension/conf/config.xml")
                     .withEnv("AWS_REGION", localStack.getRegion())
                     .withEnv("AWS_ACCESS_KEY_ID", localStack.getAccessKey())
                     .withEnv("AWS_SECRET_ACCESS_KEY", localStack.getSecretKey())
                     .withEnv("HIVEMQ_DISABLE_STATISTICS", "true")
-                    .withLogConsumer(outputFrame -> System.out.println("HIVEMQ: " +
-                            outputFrame.getUtf8StringWithoutLineEnding()))
+                    .withLogConsumer(outputFrame -> System.out
+                            .println("HIVEMQ: " + outputFrame.getUtf8StringWithoutLineEnding()))
                     .withNetwork(network);
 
     @BeforeEach
@@ -85,9 +85,8 @@ class EndToEndIT {
     @Test
     @Timeout(value = 5, unit = TimeUnit.MINUTES)
     void endToEnd() {
-        final var credentialsProvider =
-                StaticCredentialsProvider.create(AwsBasicCredentials.create(localStack.getAccessKey(),
-                        localStack.getSecretKey()));
+        final var credentialsProvider = StaticCredentialsProvider
+                .create(AwsBasicCredentials.create(localStack.getAccessKey(), localStack.getSecretKey()));
 
         final var cloudWatchClient = CloudWatchClient.builder()
                 .credentialsProvider(credentialsProvider)
@@ -157,7 +156,7 @@ class EndToEndIT {
     void configAtLegacyLocation_metricsReportedToCloudWatch() {
         final var legacyHivemq =
                 new HiveMQContainer(OciImages.getImageName("hivemq/extensions/hivemq-aws-cloudwatch-extension")
-                        .asCompatibleSubstituteFor("hivemq/hivemq4")) //
+                        .asCompatibleSubstituteFor("hivemq/hivemq4"))
                         .withCopyToContainer(MountableFile.forClasspathResource("config.xml"),
                                 "/opt/hivemq/extensions/hivemq-aws-cloudwatch-extension/extension-config.xml")
                         .withEnv("AWS_REGION", localStack.getRegion())
@@ -169,9 +168,8 @@ class EndToEndIT {
         try (legacyHivemq) {
             legacyHivemq.start();
 
-            final var credentialsProvider =
-                    StaticCredentialsProvider.create(AwsBasicCredentials.create(localStack.getAccessKey(),
-                            localStack.getSecretKey()));
+            final var credentialsProvider = StaticCredentialsProvider
+                    .create(AwsBasicCredentials.create(localStack.getAccessKey(), localStack.getSecretKey()));
 
             try (final var cloudWatchClient = CloudWatchClient.builder()
                     .credentialsProvider(credentialsProvider)
