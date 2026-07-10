@@ -13,6 +13,7 @@ jetbrains-annotations = "26.1.0"
 junit-jupiter = "5.10.0"
 logback = "1.5.38"
 mockito = "5.23.0"
+netty = "4.1.136.Final"
 testcontainers = "2.0.5"
 
 [libraries]
@@ -28,6 +29,7 @@ jaxb-impl = { module = "org.glassfish.jaxb:jaxb-runtime", version.ref = "jaxb-im
 jetbrains-annotations = { module = "org.jetbrains:annotations", version.ref = "jetbrains-annotations" }
 logback-classic = { module = "ch.qos.logback:logback-classic", version.ref = "logback" }
 mockito = { module = "org.mockito:mockito-core", version.ref = "mockito" }
+netty-bom = { module = "io.netty:netty-bom", version.ref = "netty" }
 testcontainers = { module = "org.testcontainers:testcontainers", version.ref = "testcontainers" }
 testcontainers-hivemq = { module = "org.testcontainers:testcontainers-hivemq", version.ref = "testcontainers" }
 testcontainers-junitJupiter = { module = "org.testcontainers:testcontainers-junit-jupiter", version.ref = "testcontainers" }
