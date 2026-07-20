@@ -25,7 +25,7 @@ hivemqExtension {
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(21)
+        languageVersion = JavaLanguageVersion.of(25)
     }
 }
 
@@ -90,6 +90,15 @@ oci {
     }
 }
 
+// see https://javadoc.io/doc/org.mockito/mockito-core/latest/org.mockito/org/mockito/Mockito.html#0.3
+val mockitoAgent = configurations.create("mockitoAgent") {
+    isCanBeConsumed = false
+    isCanBeResolved = true
+}
+dependencies {
+    mockitoAgent(libs.mockito) { isTransitive = false }
+}
+
 @Suppress("UnstableApiUsage")
 testing {
     suites {
@@ -105,6 +114,14 @@ testing {
             }
             targets.configureEach {
                 testTask {
+                    jvmArgumentProviders.add(CommandLineArgumentProvider {
+                        listOf(
+                                "-javaagent:${mockitoAgent.asPath}",
+                                // see https://netty.io/wiki/java-24-and-sun.misc.unsafe.html
+                                "--enable-native-access=ALL-UNNAMED",
+                                "--sun-misc-unsafe-memory-access=allow",
+                        )
+                    })
                     testLogging {
                         events = setOf(
                             TestLogEvent.STARTED,
@@ -134,6 +151,18 @@ testing {
                 implementation(libs.testcontainers.localstack)
                 implementation(libs.gradleOci.junitJupiter)
                 runtimeOnly(libs.logback.classic)
+            }
+            targets.configureEach {
+                testTask {
+                    jvmArgumentProviders.add(CommandLineArgumentProvider {
+                        listOf(
+                                "-javaagent:${mockitoAgent.asPath}",
+                                // see https://netty.io/wiki/java-24-and-sun.misc.unsafe.html
+                                "--enable-native-access=ALL-UNNAMED",
+                                "--sun-misc-unsafe-memory-access=allow",
+                        )
+                    })
+                }
             }
             oci.of(this) {
                 imageDependencies {
